@@ -1,5 +1,7 @@
-name,games played,games won,games lost, password
-mario,10,0,8,1234
-luigi,9,2,6,green_machine
-toad,8,8,0,i<3nyc
-peach,7,5,1,xoxoxo
+name,gamesPlayed,wins,losses,paper,rock,scissors,password
+Mario,0,0,0,0,0,0,Mario
+Luigi,0,0,0,0,0,0,Luigi
+Wario,0,0,0,0,0,0,Wario
+Waluigi,0,0,0,0,0,0,Waluigi
+Rifat,0,0,0,0,0,0,Rifat
+Steve,0,0,0,0,0,0,Steve
