@@ -53,6 +53,12 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
+app.get('/user_details', function(request, response){
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('user_details');
+});
+
 app.get('/login', function(request, response){
   var user_data={
       name: request.query.player_name,
