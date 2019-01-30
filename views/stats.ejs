@@ -5,11 +5,12 @@
   <link rel="stylesheet" href="styles/style.css">
  </head>
 <body>
+  <% include global/header.ejs %>
 
-  <% include global/header %>
+  <% //win/loss ratio %>
 
   <div id="stats">
-    <h2>Stats- ____ games played</h2>
+    <h2>User Statistics</h2>
     <table>
       <tr>
         <th class="top_row">Player Name</th>
@@ -17,32 +18,76 @@
         <th class="top_row">Games Won</th>
         <th class="top_row">Games Lost</th>
         <th class="top_row">Games Tied</th>
+        <th class="top_row">Percent Paper</th>
+        <th class="top_row">Percent Rock</th>
+        <th class="top_row">Percent Scissors</th>
+        <th class="top_row">Percent Won</th>
       </tr>
-      <%for(var i=0; i<users.length;i++){%>
-        <tr>
-          <td>
-          <%=users[i].name%>
-         </td>
-          <td>
-           <%=users[i]["games played"]%>
-          </td>
-          <td>
-          <%=users[i]["games won"]/users[i]["games played"]*100%>%
-         </td>
-         <td>
-         <%=users[i]["games lost"]/users[i]["games played"]*100%>%
-        </td>
-        <td>
-        <%var tie_amount = users[i]["games played"]-(users[i]["games won"]+users[i]["games lost"]);%>
-        <%=tie_amount/users[i]["games played"]*100%>%
-       </td>
-        </tr>
-      <%}%>
+      <%for(var i=0; i< user.length; i++){%>
+      <tr>
+        <td> <%= user[i]["name"]%> </td>
+        <td> <%= user[i]["gamesPlayed"]%> </td>
+        <td> <%= user[i]["wins"]%> </td>
+        <td> <%= user[i]["losses"]%> </td>
+        <td> <%= user[i]["gamesPlayed"]-user[i]["wins"]-user[i]["losses"]%> </td>
+        <% if (user[i]["gamesPlayed"]!=0) { %>
+          <td> <%= (parseInt(100*user[i]["paper"]/user[i]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*user[i]["rock"]/user[i]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*user[i]["scissors"]/user[i]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*user[i]["wins"]/user[i]["gamesPlayed"])).toString()+"%" %> </td>
+        <%}  else{ %>
+            <td>0%</td>
+            <td>0%</td>
+            <td>0%</td>
+            <td>0%</td>
+          <% }} %>
+    </tr>
+    </table>
+
+    <h2>Villain Statistics</h2>
+    <table>
+      <tr>
+        <th class="top_row">Villain Name</th>
+        <th class="top_row">Games Played</th>
+        <th class="top_row">Games Won</th>
+        <th class="top_row">Games Lost</th>
+        <th class="top_row">Games Tied</th>
+        <th class="top_row">Percent Paper</th>
+        <th class="top_row">Percent Rock</th>
+        <th class="top_row">Percent Scissors</th>
+        <th class="top_row">Percent Won</th>
+        <th class="top_row">Strategy Used</th>
+      </tr>
+
+      <% var newVillains = villain.sort(function(a, b){ %>
+        <% var aVal = 0; %>
+        <% var bVal = 0; %>
+        <% if (a.gamesPlayed!=0) {aVal = a.wins/a.gamesPlayed;} %>
+        <% if (b.gamesPlayed!=0) {bVal = b.wins/b.gamesPlayed;} %>
+        <% return aVal - bVal; }); %>
+      <% for(var k=newVillains.length-1; k>=0; k--){%>
+      <tr>
+        <td> <%= newVillains[k]["name"]%> </td>
+        <td> <%= newVillains[k]["gamesPlayed"]%> </td>
+        <td> <%= newVillains[k]["wins"]%> </td>
+        <td> <%= newVillains[k]["losses"]%> </td>
+        <td> <%= newVillains[k]["gamesPlayed"]-newVillains[k]["wins"]-newVillains[k]["losses"]%> </td>
+        <% if (newVillains[k]["gamesPlayed"]!=0) { %>
+          <td> <%= (parseInt(100*newVillains[k]["paper"]/newVillains[k]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*newVillains[k]["rock"]/newVillains[k]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*newVillains[k]["scissors"]/newVillains[k]["gamesPlayed"])).toString()+"%" %> </td>
+          <td> <%= (parseInt(100*newVillains[k]["wins"]/newVillains[k]["gamesPlayed"])).toString()+"%" %> </td>
+        <%} else{ %>
+          <td>0%</td>
+          <td>0%</td>
+          <td>0%</td>
+          <td>0%</td>
+        <% } %>
+        <td> <%= newVillains[k]["strategy"]%> </td>
+      <% } %>
+      </tr>
     </table>
   </div>
-
-  <footer>
-    Brought to you by the cool kids of Software Engineering - Fall, 2018.
-  </footer>
+  <% include global/footer.ejs %>
  </body>
 </html>
