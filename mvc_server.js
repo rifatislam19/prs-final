@@ -8,7 +8,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/logo.png'));
 app.use(express.json());
-app,use(expresss.urlencoded());
+app.use(expresss.urlencoded());
 
 
 app.use(require('./controllers/user'));
