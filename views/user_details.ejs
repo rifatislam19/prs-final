@@ -12,10 +12,10 @@
   <div id="feedback">
   </div>
   <div id="enter_name">
-    <h2>User Details - <%=user.name%></h2>
-    <form action ="/user/<%=user.name%>" method = "post">
-      Username: <input type = "text" name = "username" value = "<%=user.name%>"><br>
-      Password: <input type = "text" name = "password" value="<%if(user.password){%><%=user.password%><%}%>"><br>
+    <h2>User Details</h2>
+    <form action ="/users" method = "post">
+      Username: <input type = "text" name = "username"><br>
+      Password: <input type = "text" name = "password"><br>
       <input type="submit" value="Submit">
     </form>
   </div>
