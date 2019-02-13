@@ -1,4 +1,8 @@
 var fs = require("fs");
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./client_secret.json');
+
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
 
 exports.getUser = function(user_id) {
   console.log("User.getUser("+user_id+") called");
@@ -42,11 +46,15 @@ exports.updateUser = function(user_id, key, value) {
   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
 }
 
-var getRows= function(){
-  console.log("User.getRows() called, converts users.csv into an array by line");
-  return fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split('\n');
+var getAllDatabaseRows= function(callback){
+  // Authenticate with the Google Spreadsheets API.
+  doc.useServiceAccountAuth(creds, function (err) {
+    // Get all of the rows from the spreadsheet.
+    doc.getRows(1, function (err, rows) {
+      console.log(rows);
+    });
+  });
 }
-//reads the users.csv and converts it into an array
 
 var parseString= function (str){
   console.log("User.parseString() called on: "+str);
