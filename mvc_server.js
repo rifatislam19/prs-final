@@ -56,10 +56,16 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
+app.get('/create_user', function(request, response){
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('user_details', {newUser:true});
+});
+
 app.get('/user_details', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
-  response.render('user_details');
+  response.render('user_details', {newUser:false});
 });
 
 app.get('/login', function(request, response){
@@ -315,6 +321,11 @@ app.get('/:user/results', function(request, response){
     response.render('results', {user:user_data,user_info:user_info,villain_data:villain_data,villain_throw:villain_throw, type:type});
 
 });
+
+app.post('/users', function(request, response){
+
+});
+
 
 app.get('/rules', function(request, response){
   response.status(200);
