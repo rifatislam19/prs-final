@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var favicon = require('serve-favicon');
+var models_user = require('models/user.js');
 
 var app = express();
 app.use(express.static('public'));
@@ -264,6 +265,10 @@ app.get('/:user/results', function(request, response){
       new_user_data += user_info[i]["rock"] + ",";
       new_user_data += user_info[i]["scissors"] + ",";
       new_user_data += user_info[i]["password"];
+      new_user_data += user_info[i]["first"] + ",";
+      new_user_data += user_info[i]["last"] + ",";
+      new_user_data += user_info[i]["created"] + ",";
+      new_user_data += user_info[i]["lastUpdated"];
       new_user_data += "\n";
     }
     fs.writeFileSync('data/users.csv', new_user_data,'utf8');
@@ -299,20 +304,13 @@ var getDateString = function () {
 }
 
 app.post('/users', function(request, response){
-  var new_user = {
-    name: user_data["name"],
-    gamesPlayed: 0,
-    wins: 0,
-    losses: 0,
-    paper: 0,
-    rock: 0,
-    scissors: 0,
-    password: user_data["password"],
-    first: user_data["first"],
-    last: user_data["last"],
-    created: getDateString(),
-    lastUpdated: getDateString()
-  }//given that new username was inputted, new user object created
+  var user_data={
+      name: request.query.username,
+      password: request.query.password,
+      first: request.query.firstname,
+      last: request.query.lastname
+  };//reads data fields
+  var new_user = models_user.createBlankUser(user_data);
   user_info.push(new_user);//new user object added to list of users
   var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,lastUpdated\n";
   for(i=0; i<user_info.length; i++){
@@ -328,7 +326,6 @@ app.post('/users', function(request, response){
     new_user_data += user_info[i]["last"] + ",";
     new_user_data += user_info[i]["created"] + ",";
     new_user_data += user_info[i]["lastUpdated"];
-
     new_user_data += "\n";
   }
   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
