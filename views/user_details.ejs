@@ -12,7 +12,6 @@
   <div id="feedback">
   </div>
   <div id="enter_name">
-    <%if(newUser){%>
     <h2>New User</h2>
     <form action ="/users" method = "post">
       Username: <input type = "text" name = "username"><br>
@@ -21,16 +20,7 @@
       Last Name: <input type = "text" name = "lastname"><br>
       <input type="submit" value="Create">
     </form>
-    <%} else{%>
-    <h2>User Details - <%user.name%></h2>
-    <form action ="/users" method = "post">
-      Username: <input type = "text" name = "username" value = "<%=user.name%>"><br>
-      Password: <input type = "text" name = "password" value = "<%=user.password%>"><br>
-      First Name: <input type = "text" name = "firstname"><br>
-      Last Name: <input type = "text" name = "lastname"><br>
-      <input type="submit" value="Create">
-    </form>
-    <%}%>
+
   </div>
   <footer>
     Brought to you by the cool kids of Software Engineering - Fall, 2018.

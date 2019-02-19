@@ -1,4 +1,4 @@
-name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated
+name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,lastUpdated
 Mario,0,0,0,0,0,0,Mario,Mario,Mario,01/01/2019,01/01/2019
 Luigi,0,0,0,0,0,0,Luigi,Luigi,Mario,01/01/2019,01/01/2019
 Wario,0,0,0,0,0,0,Wario,Wario,Mario,01/01/2019,01/01/2019

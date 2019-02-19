@@ -7,11 +7,11 @@ var fs = require("fs");
 exports.getUser = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
-  var user = createBlankUser();
+  var user = completelyBlankUser();
   var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
   var userMissing = true;
   for(var i=1; i<all_users.length; i++){
-    var u = parseString(all_users[i]);
+    var u = exports.parseString(all_users[i]);
     if(u.name==user_id){
       userMissing = false;
       user=u;
@@ -53,7 +53,7 @@ exports.updateUser = function(user_id, key, value) {
   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
 }
 
-var getAllDatabaseRows= function(callback){
+exports.getAllDatabaseRows= function(callback){
   // Authenticate with the Google Spreadsheets API.
   doc.useServiceAccountAuth(creds, function (err) {
     // Get all of the rows from the spreadsheet.
@@ -63,7 +63,7 @@ var getAllDatabaseRows= function(callback){
   });
 }
 
-var parseString= function (str){
+exports.parseString= function (str){
   console.log("User.parseString() called on: "+str);
   var arr = str.split(',');
   var output = {name:arr[0], games_played:arr[1], lost:arr[2], won:arr[3], password:arr[4]};
@@ -72,7 +72,7 @@ var parseString= function (str){
 }
 //converts a string row from users.csv into a user object
 
-var createString= function (userObject){
+exports.createString= function (userObject){
   console.log("User.createString() called on (JSON version of object): "+ JSON.strinigy(userObject));
   var output = userObject.name+","+userObject.games_played+","+userObject.lost+","+userObject.won+","+userObject.password;
   console.log("Outputted string: "+output);
@@ -80,7 +80,7 @@ var createString= function (userObject){
 }
 //converts a user object back to a string
 
-var createCSVText= function (array){
+exports.createCSVText= function (array){
   console.log("User.createCSVText() called giving the following output:");
   var header = "name,gamesPlayed,wins,losses,paper,rock,scissors,password";//header string for CSV file
   var output = header;
@@ -93,8 +93,16 @@ var createCSVText= function (array){
 }
 //converts an array of strings into a csv file
 
-var createBlankUser= function(user){
+var completelyBlankUser= function(){
+  console.log("User.completelyBlankUser() called");
+  return {name:"", games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:""};//include timing
+}
+//creates a blank user object given an input object
+
+exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  return {name:user.name, games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last};//include timing
+  var output = {name:user.name, games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last};//include timing
+  console.log(JSON.stringify(output));
+  return output;
 }
 //creates a blank user object given an input object

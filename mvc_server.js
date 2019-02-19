@@ -1,7 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var favicon = require('serve-favicon');
-var models_user = require('models/user.js');
+var models_user = require('./models/User.js');
 
 var app = express();
 app.use(express.static('public'));
@@ -311,6 +311,13 @@ app.post('/users', function(request, response){
       last: request.query.lastname
   };//reads data fields
   var new_user = models_user.createBlankUser(user_data);
+  var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
+  var rows = users_file.split('\n');//generates array of stringified user objects
+  var user_info = [];//array which will hold objectified users
+  for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
+    var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
+    user_info.push(user);//adds user to list
+  }
   user_info.push(new_user);//new user object added to list of users
   var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,lastUpdated\n";
   for(i=0; i<user_info.length; i++){
