@@ -38,6 +38,10 @@ var userArrayToObject = function (userArray) {
     output["rock"] = parseInt(userArray[5]);
     output["scissors"] = parseInt(userArray[6]);
     output["password"] = userArray[7];
+    output["first"] = userArray[8];
+    output["last"] = userArray[9];
+    output["created"] = userArray[10];
+    output["lastUpdated"] = userArray[11];
     //adds object attributes dependent on index in array
     return output;//returns object as output
 }
@@ -56,7 +60,7 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
-app.get('/create_user', function(request, response){
+app.get('/user/new', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('user_details', {newUser:true});
@@ -108,44 +112,6 @@ app.get('/login', function(request, response){
       }
     }
 
-    if (newUserInfo) {
-      var new_user = {
-        name: user_data["name"],
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        paper: 0,
-        rock: 0,
-        scissors: 0,
-        password: user_data["password"]
-      }//given that new username was inputted, new user object created
-      user_info.push(new_user);//new user object added to list of users
-      var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password\n";
-      for(i=0; i<user_info.length; i++){
-        new_user_data += user_info[i]["name"] + ",";
-        new_user_data += user_info[i]["gamesPlayed"] + ",";
-        new_user_data += user_info[i]["wins"] + ",";
-        new_user_data += user_info[i]["losses"] + ",";
-        new_user_data += user_info[i]["paper"] + ",";
-        new_user_data += user_info[i]["rock"] + ",";
-        new_user_data += user_info[i]["scissors"] + ",";
-        new_user_data += user_info[i]["password"];
-        new_user_data += "\n";
-      }
-      fs.writeFileSync('data/users.csv', new_user_data,'utf8');
-      //converts user information back into a string and writes it to csv file
-      response.status(200);
-      response.setHeader('Content-Type', 'text/html')
-      var villains_file=fs.readFileSync('data/villains.csv','utf8');
-      var villainsRows = villains_file.split('\n');
-      var villain_data = [];
-      for(var i=1; i<villainsRows.length-1; i++){
-        var villain_d = villainsRows[i].split(',');
-        var villain = villainArrayToObject(villain_d);
-        villain_data.push(villain);
-      }
-      response.render('game', {user:user_data,villain:villain_data, message3:false});//links to game page with appropriate villain information
-    }
   }
 });
 
@@ -322,8 +288,54 @@ app.get('/:user/results', function(request, response){
 
 });
 
-app.post('/users', function(request, response){
+var getDateString = function () {
+	var now = new Date();
+	var output = "";
+	output = output + now.getMonth();
+ 	output = output + "/" + now.getDay();
+	output = output + "/" + now.getFullYear();
+	console.log("Current date logged: " + output);
+	return output;
+}
 
+app.post('/users', function(request, response){
+  var new_user = {
+    name: user_data["name"],
+    gamesPlayed: 0,
+    wins: 0,
+    losses: 0,
+    paper: 0,
+    rock: 0,
+    scissors: 0,
+    password: user_data["password"],
+    first: user_data["first"],
+    last: user_data["last"],
+    created: getDateString(),
+    lastUpdated: getDateString()
+  }//given that new username was inputted, new user object created
+  user_info.push(new_user);//new user object added to list of users
+  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,lastUpdated\n";
+  for(i=0; i<user_info.length; i++){
+    new_user_data += user_info[i]["name"] + ",";
+    new_user_data += user_info[i]["gamesPlayed"] + ",";
+    new_user_data += user_info[i]["wins"] + ",";
+    new_user_data += user_info[i]["losses"] + ",";
+    new_user_data += user_info[i]["paper"] + ",";
+    new_user_data += user_info[i]["rock"] + ",";
+    new_user_data += user_info[i]["scissors"] + ",";
+    new_user_data += user_info[i]["password"] + ",";
+    new_user_data += user_info[i]["first"] + ",";
+    new_user_data += user_info[i]["last"] + ",";
+    new_user_data += user_info[i]["created"] + ",";
+    new_user_data += user_info[i]["lastUpdated"];
+
+    new_user_data += "\n";
+  }
+  fs.writeFileSync('data/users.csv', new_user_data,'utf8');
+  //converts user information back into a string and writes it to csv file
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('index', {message:false, message2:false});
 });
 
 

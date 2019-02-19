@@ -1,14 +1,14 @@
 var fs = require("fs");
-var GoogleSpreadsheet = require('google-spreadsheet');
-var creds = require('./client_secret.json');
-
-var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+// var GoogleSpreadsheet = require('google-spreadsheet');
+// var creds = require('./client_secret.json');
+//
+// var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
 
 exports.getUser = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
   var user = createBlankUser();
-  var all_users = getRows();
+  var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
   var userMissing = true;
   for(var i=1; i<all_users.length; i++){
     var u = parseString(all_users[i]);
@@ -22,6 +22,13 @@ exports.getUser = function(user_id) {
   return user;
 }
 //retrieves user by name
+
+// exports.getUsers=function(callback) {
+//
+//   getAllDatabaseRows(function(users){
+//     callback(users);
+//   });
+// }
 
 exports.updateUser = function(user_id, key, value) {
   console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
@@ -51,7 +58,7 @@ var getAllDatabaseRows= function(callback){
   doc.useServiceAccountAuth(creds, function (err) {
     // Get all of the rows from the spreadsheet.
     doc.getRows(1, function (err, rows) {
-      console.log(rows);
+      callback(rows);
     });
   });
 }
@@ -86,8 +93,8 @@ var createCSVText= function (array){
 }
 //converts an array of strings into a csv file
 
-var createBlankUser= function(){
+var createBlankUser= function(user_name, user_password){
   console.log("User.createBlankUser() called");
-  return {name:"", games_played:0, lost:0, won:0, password:""};
+  return {name:user_name, games_played:0, lost:0, won:0, password:user_password};
 }
 //creates a blank user object
