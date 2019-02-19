@@ -293,24 +293,15 @@ app.get('/:user/results', function(request, response){
 
 });
 
-var getDateString = function () {
-	var now = new Date();
-	var output = "";
-	output = output + now.getMonth();
- 	output = output + "/" + now.getDay();
-	output = output + "/" + now.getFullYear();
-	console.log("Current date logged: " + output);
-	return output;
-}
 
 app.post('/users', function(request, response){
-  var user_data={
+  var user={
       name: request.query.username,
       password: request.query.password,
       first: request.query.firstname,
       last: request.query.lastname
   };//reads data fields
-  var new_user = models_user.createBlankUser(user_data);
+  var new_user = models_user.createBlankUser(user);
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users
@@ -319,7 +310,7 @@ app.post('/users', function(request, response){
     user_info.push(user);//adds user to list
   }
   user_info.push(new_user);//new user object added to list of users
-  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,lastUpdated\n";
+  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
   for(i=0; i<user_info.length; i++){
     new_user_data += user_info[i]["name"] + ",";
     new_user_data += user_info[i]["gamesPlayed"] + ",";

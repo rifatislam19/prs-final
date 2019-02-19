@@ -95,13 +95,23 @@ exports.createCSVText= function (array){
 
 var completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:""};//include timing
+  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:""};//include timing
 }
 //creates a blank user object given an input object
 
+var getDateString= function () {
+	var now = new Date();
+	var output = "";
+	output = output + now.getMonth();
+ 	output = output + "/" + now.getDay();
+	output = output + "/" + now.getFullYear();
+	console.log("Current date logged: " + output);
+	return output;
+}
+
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last};//include timing
+  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString()};//include timing
   console.log(JSON.stringify(output));
   return output;
 }
