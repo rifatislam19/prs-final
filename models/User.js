@@ -93,8 +93,8 @@ var createCSVText= function (array){
 }
 //converts an array of strings into a csv file
 
-var createBlankUser= function(user_name, user_password){
+var createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  return {name:user_name, games_played:0, lost:0, won:0, password:user_password};
+  return {name:user.name, games_played:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last};//include timing
 }
-//creates a blank user object
+//creates a blank user object given an input object
