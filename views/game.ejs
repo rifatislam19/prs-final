@@ -11,7 +11,7 @@
   <form action="/" method="get">
     <button type="submit" id = "log_out_button">Log out</button>
   </form>
-  <form action="/user_details" method="get">
+  <form action="<%=user.name%>/edit" method="get">
     <button type="submit" id = "user_details_button">User Details</button>
   </form>
   <% if (message3) { %>

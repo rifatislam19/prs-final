@@ -1,7 +1,8 @@
-var express = require('express');
-var fs = require('fs');
-var favicon = require('serve-favicon');
-var models_user = require('./models/User.js');
+var express = require('express');//downloads express libraries
+var fs = require('fs');//downloads fs libraries, shouldn't be necessary in end project
+var favicon = require('serve-favicon');//I think this has to do with the thing in the corner of a tab
+var models_user = require('./models/User.js');//downloads our library of user functions
+var models_villain = require('./models/Villain.js');//downloads our library of villain functions
 
 var app = express();
 app.use(express.static('public'));
@@ -10,42 +11,25 @@ app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/logo.png'));
 app.use(express.json());
 app.use(express.urlencoded());
-
+//setting up express, do not mess with this
 
 app.use(require('./controllers/user'));
-var Users = require(__dirname +'/models/User');
-
+//downloads our library of user controllers
 
 var port = 3000;
 app.listen(port, function(){
   console.log('Server started at '+ new Date()+', on port ' + port+'!');
 });
+//starts server
 
-var count = 0;//strategy component for specific villain Gato
+var count = 0;
+//strategy component for specific villain Gato, leave alone
 
 app.get('/', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('index', {message:false, message2:false});
 });//just accessing home without error messages
-
-var userArrayToObject = function (userArray) {
-    var output = {};//initiates object that will be the user
-    output["name"] = userArray[0];
-    output["gamesPlayed"] = parseInt(userArray[1]);
-    output["wins"] = parseInt(userArray[2]);
-    output["losses"] = parseInt(userArray[3]);
-    output["paper"] = parseInt(userArray[4]);
-    output["rock"] = parseInt(userArray[5]);
-    output["scissors"] = parseInt(userArray[6]);
-    output["password"] = userArray[7];
-    output["first"] = userArray[8];
-    output["last"] = userArray[9];
-    output["created"] = userArray[10];
-    output["lastUpdated"] = userArray[11];
-    //adds object attributes dependent on index in array
-    return output;//returns object as output
-}
 
 var villainArrayToObject = function (villain_d) {
   var villain = {};//initiates object that will be villain
@@ -67,11 +51,14 @@ app.get('/user/new', function(request, response){
   response.render('user_details', {newUser:true});
 });
 
+
+//don't edit start
 app.get('/user_details', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('user_details', {newUser:false});
 });
+//don't edit end
 
 app.get('/login', function(request, response){
   var user_data={
@@ -82,7 +69,7 @@ app.get('/login', function(request, response){
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users
   for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
-    var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
+    var user = models_user.parseString(rows[i]);//converts stringified user object to array of stringified values
     user_info.push(user);//adds user to list
   }
 
@@ -112,7 +99,6 @@ app.get('/login', function(request, response){
         newUserInfo = false;//in the event of loop breaking error, does not allow new user with incorrect information to be added
       }
     }
-
   }
 });
 
@@ -255,7 +241,7 @@ app.get('/:user/results', function(request, response){
         //updates choice and games played attributes for users
       }
     }
-    var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password\n";
+    var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
     for(i=0; i<user_info.length; i++){
       new_user_data += user_info[i]["name"] + ",";
       new_user_data += user_info[i]["gamesPlayed"] + ",";
@@ -264,7 +250,7 @@ app.get('/:user/results', function(request, response){
       new_user_data += user_info[i]["paper"] + ",";
       new_user_data += user_info[i]["rock"] + ",";
       new_user_data += user_info[i]["scissors"] + ",";
-      new_user_data += user_info[i]["password"];
+      new_user_data += user_info[i]["password"] + ",";
       new_user_data += user_info[i]["first"] + ",";
       new_user_data += user_info[i]["last"] + ",";
       new_user_data += user_info[i]["created"] + ",";
@@ -293,6 +279,13 @@ app.get('/:user/results', function(request, response){
 
 });
 
+
+app.get('/:user/edit', function(request, response){
+
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('user_details', {newUser:false});
+});
 
 app.post('/users', function(request, response){
   var user={
@@ -334,7 +327,6 @@ app.post('/users', function(request, response){
   response.render('index', {message:false, message2:false});
 });
 
-
 app.get('/rules', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
@@ -349,8 +341,7 @@ app.get('/stats', function(request, response){
   var user_data = [];
   var villain_data = [];
   for(var i=1; i<rows.length-1; i++){
-    var user_d = rows[i].split(',');
-    var user = userArrayToObject(user_d);
+    var user = models_user.parseString(rows[i]);
     user_data.push(user);//add the user to the array of users
 
   }
