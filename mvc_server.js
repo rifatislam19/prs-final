@@ -296,11 +296,12 @@ app.get('/:user/results', function(request, response){
 
 app.post('/users', function(request, response){
   var user={
-      name: request.query.username,
-      password: request.query.password,
-      first: request.query.firstname,
-      last: request.query.lastname
+      name: request.body.username,
+      password: request.body.password,
+      first: request.body.firstname,
+      last: request.body.lastname
   };//reads data fields
+  console.log("MVC Server Input User: "+JSON.stringify(user));
   var new_user = models_user.createBlankUser(user);
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
