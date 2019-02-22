@@ -4,6 +4,8 @@ var fs = require("fs");
 //
 // var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
 
+exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
+
 exports.getUser = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
@@ -66,7 +68,20 @@ exports.getAllDatabaseRows= function(callback){
 exports.parseString= function (str){
   console.log("User.parseString() called on: "+str);
   var arr = str.split(',');
-  var output = {name:arr[0], games_played:arr[1], lost:arr[2], won:arr[3], password:arr[4]};
+  var output = {};
+  output.name = arr[0];
+  output.gamesPlayed = arr[1];
+  output.wins = arr[2];
+  output.losses = arr[3];
+  output.paper = arr[4];
+  output.rock = arr[5];
+  output.scissors = arr[6];
+  output.password = arr[7];
+  output.first = arr[8];
+  output.last = arr[9];
+  output.created = arr[10];
+  output.lastUpdated = arr[11],
+  output.loggedOn = arr[12];
   console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
   return output;
 }
@@ -74,7 +89,20 @@ exports.parseString= function (str){
 
 exports.createString= function (userObject){
   console.log("User.createString() called on (JSON version of object): "+ JSON.strinigy(userObject));
-  var output = userObject.name+","+userObject.games_played+","+userObject.lost+","+userObject.won+","+userObject.password;
+  var output = userObject["name"] + ",";
+  output += userObject["gamesPlayed"] + ",";
+  output += userObject["wins"] + ",";
+  output += userObject["losses"] + ",";
+  output += userObject["paper"] + ",";
+  output += userObject["rock"] + ",";
+  output += userObject["scissors"] + ",";
+  output += userObject["password"] + ",";
+  output += userObject["first"] + ",";
+  output += userObject["last"] + ",";
+  output += userObject["created"] + ",";
+  output += userObject["lastUpdated"] + ","
+  output += userObject["loggedOn"];
+  output += "\n";
   console.log("Outputted string: "+output);
   return output;
 }
@@ -82,7 +110,7 @@ exports.createString= function (userObject){
 
 exports.createCSVText= function (array){
   console.log("User.createCSVText() called giving the following output:");
-  var header = "name,gamesPlayed,wins,losses,paper,rock,scissors,password";//header string for CSV file
+  var header = exports.usersCSVHeader;//header string for CSV file
   var output = header;
   for (var i = 0; i < len(array); i ++) {
     output = output + "\n" + array[i];
@@ -95,7 +123,7 @@ exports.createCSVText= function (array){
 
 var completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:""};//include timing
+  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:"01/01/2019", lastUpdated:"01/01/2019", loggedOn:"No"};//include timing
 }
 //creates a blank user object given an input object
 
@@ -111,7 +139,7 @@ var getDateString= function () {
 
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString()};//include timing
+  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString(), loggedOn:"No"};//include timing
   console.log(JSON.stringify(output));
   return output;
 }

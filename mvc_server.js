@@ -23,14 +23,36 @@ app.listen(port, function(){
 //starts server
 
 var count = 0;
+var username = " ";
+var password = " ";
 //strategy component for specific villain Gato, leave alone
 
 app.get('/', function(request, response){
+  username = " ";
+  password = " ";
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('index', {message:false, message2:false});
 });//just accessing home without error messages
 
+var userArrayToObject = function (user_d) {
+  var user = {};//initiates object that will be villain
+  user["name"] = user_d[0];
+  user["gamesPlayed"] = parseInt(user_d[1]);
+  user["wins"] = parseInt(user_d[2]);
+  user["losses"] = parseInt(user_d[3]);
+  user["paper"] = parseInt(user_d[4]);
+  user["rock"] = parseInt(user_d[5]);
+  user["scissors"] = parseInt(user_d[6]);
+  user["password"] = user_d[7];
+  user["first"] = user_d[8];
+  user["last"] = user_d[9];
+  user["created"] = user_d[10];
+  user["lastUpdated"] = user_d[11];
+  user["loggedOn"] = user_d[12];
+  //adds object attributes dependent on index in array
+  return user;//returns object as output
+}
 var villainArrayToObject = function (villain_d) {
   var villain = {};//initiates object that will be villain
   villain["name"] = villain_d[0];
@@ -48,7 +70,7 @@ var villainArrayToObject = function (villain_d) {
 app.get('/user/new', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
-  response.render('user_details', {newUser:true});
+  response.render('user_details', {newUser:true,username:username,password:password});
 });
 
 
@@ -65,6 +87,8 @@ app.get('/login', function(request, response){
       name: request.query.player_name,
       password: request.query.player_password
   };//reads data fields
+  username = request.query.player_name;
+  password = request.query.player_password;
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users
@@ -254,7 +278,8 @@ app.get('/:user/results', function(request, response){
       new_user_data += user_info[i]["first"] + ",";
       new_user_data += user_info[i]["last"] + ",";
       new_user_data += user_info[i]["created"] + ",";
-      new_user_data += user_info[i]["lastUpdated"];
+      new_user_data += user_info[i]["lastUpdated"] + ","
+      new_user_data += user_info[i]["loggedOn"];
       new_user_data += "\n";
     }
     fs.writeFileSync('data/users.csv', new_user_data,'utf8');
@@ -281,10 +306,9 @@ app.get('/:user/results', function(request, response){
 
 
 app.get('/:user/edit', function(request, response){
-
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
-  response.render('user_details', {newUser:false});
+  response.render('user_details', {username:username,password:password});
 });
 
 app.post('/users', function(request, response){
@@ -317,7 +341,8 @@ app.post('/users', function(request, response){
     new_user_data += user_info[i]["first"] + ",";
     new_user_data += user_info[i]["last"] + ",";
     new_user_data += user_info[i]["created"] + ",";
-    new_user_data += user_info[i]["lastUpdated"];
+    new_user_data += user_info[i]["lastUpdated"] + ","
+    new_user_data += user_info[i]["loggedOn"];
     new_user_data += "\n";
   }
   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
