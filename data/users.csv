@@ -1,7 +1,7 @@
 name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated
-Mario,4,1,3,0,4,0,Mario,Mario,Mario,01/01/2019,01/01/2019,No
-Luigi,0,0,0,0,0,0,Luigi,Mario,Mario,01/01/2019,01/01/2019,No
-Wario,0,0,0,0,0,0,Wario,Mario,Mario,01/01/2019,01/01/2019,No
-Waluigi,0,0,0,0,0,0,Waluigi,Mario,Mario,01/01/2019,01/01/2019,No
-Rifat,0,0,0,0,0,0,Rifat,Mario,Mario,01/01/2019,01/01/2019,No
-Steve,0,0,0,0,0,0,Steve,Mario,Mario,01/01/2019,01/01/2019,No
+Mario,4,1,3,0,4,0,Mario,Mario,Mario,01/01/2019,01/01/2019
+Luigi,0,0,0,0,0,0,Luigi,Mario,Mario,01/01/2019,01/01/2019
+Wario,0,0,0,0,0,0,Wario,Mario,Mario,01/01/2019,01/01/2019
+Waluigi,0,0,0,0,0,0,Waluigi,Mario,Mario,01/01/2019,01/01/2019
+Rifat,0,0,0,0,0,0,Rifat,Mario,Mario,01/01/2019,01/01/2019
+Steve,0,0,0,0,0,0,Steve,Mario,Mario,01/01/2019,01/01/2019

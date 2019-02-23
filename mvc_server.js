@@ -49,7 +49,6 @@ var userArrayToObject = function (user_d) {
   user["last"] = user_d[9];
   user["created"] = user_d[10];
   user["lastUpdated"] = user_d[11];
-  user["loggedOn"] = user_d[12];
   //adds object attributes dependent on index in array
   return user;//returns object as output
 }
@@ -72,15 +71,6 @@ app.get('/user/new', function(request, response){
   response.setHeader('Content-Type', 'text/html')
   response.render('user_details', {newUser:true,username:username,password:password});
 });
-
-
-//don't edit start
-app.get('/user_details', function(request, response){
-  response.status(200);
-  response.setHeader('Content-Type', 'text/html')
-  response.render('user_details', {newUser:false});
-});
-//don't edit end
 
 app.get('/login', function(request, response){
   var user_data={
@@ -278,8 +268,7 @@ app.get('/:user/results', function(request, response){
       new_user_data += user_info[i]["first"] + ",";
       new_user_data += user_info[i]["last"] + ",";
       new_user_data += user_info[i]["created"] + ",";
-      new_user_data += user_info[i]["lastUpdated"] + ","
-      new_user_data += user_info[i]["loggedOn"];
+      new_user_data += user_info[i]["lastUpdated"];
       new_user_data += "\n";
     }
     fs.writeFileSync('data/users.csv', new_user_data,'utf8');
@@ -305,11 +294,11 @@ app.get('/:user/results', function(request, response){
 });
 
 
-app.get('/:user/edit', function(request, response){
-  response.status(200);
-  response.setHeader('Content-Type', 'text/html')
-  response.render('user_details', {username:username,password:password});
-});
+// app.get('/:user/edit', function(request, response){
+//   response.status(200);
+//   response.setHeader('Content-Type', 'text/html')
+//   response.render('user_details', {username:username,password:password});
+// });
 
 app.post('/users', function(request, response){
   var user={
@@ -341,8 +330,7 @@ app.post('/users', function(request, response){
     new_user_data += user_info[i]["first"] + ",";
     new_user_data += user_info[i]["last"] + ",";
     new_user_data += user_info[i]["created"] + ",";
-    new_user_data += user_info[i]["lastUpdated"] + ","
-    new_user_data += user_info[i]["loggedOn"];
+    new_user_data += user_info[i]["lastUpdated"];
     new_user_data += "\n";
   }
   fs.writeFileSync('data/users.csv', new_user_data,'utf8');

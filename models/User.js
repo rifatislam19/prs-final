@@ -6,7 +6,7 @@ var fs = require("fs");
 
 exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
 
-exports.getUser = function(user_id) {
+exports.getUserByName = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
   var user = completelyBlankUser();
