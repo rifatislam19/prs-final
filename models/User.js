@@ -109,6 +109,7 @@ exports.deleteUser = function(user_id) {
       new_user_data += "\n";
     }
   }
+  fs.writeFileSync('data/users.csv', new_user_data,'utf8');
 }
 
 exports.getAllDatabaseRows= function(callback){
