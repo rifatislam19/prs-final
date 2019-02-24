@@ -53,6 +53,42 @@ exports.updateUser = function(user_id, key, value) {
   newRows[i]=newString;//replaces string
   var newCSV = createCSVText(newRows);
   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
+
+  return userObj;
+}
+
+exports.deleteUser = function(user_id) {
+  console.log("User.deleteUser("+user_id+") called");
+
+  var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
+  var rows = users_file.split('\n');//generates array of stringified user objects
+  var user_info = [];//array which will hold objectified users
+  for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
+    var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
+    user_info.push(user);//adds user to list
+  }
+
+  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
+  for(i=0; i<user_info.length; i++){
+    if(user_info[i]["name"]!=user_id){
+      new_user_data += user_info[i]["name"] + ",";
+      new_user_data += user_info[i]["gamesPlayed"] + ",";
+      new_user_data += user_info[i]["wins"] + ",";
+      new_user_data += user_info[i]["losses"] + ",";
+      new_user_data += user_info[i]["paper"] + ",";
+      new_user_data += user_info[i]["rock"] + ",";
+      new_user_data += user_info[i]["scissors"] + ",";
+      new_user_data += user_info[i]["password"] + ",";
+      new_user_data += user_info[i]["first"] + ",";
+      new_user_data += user_info[i]["last"] + ",";
+      new_user_data += user_info[i]["created"] + ",";
+      new_user_data += user_info[i]["lastUpdated"];
+      new_user_data += "\n";
+    }
+  }
+
+  var userObj = getUser(user_id);
+  return userObj;
 }
 
 exports.getAllDatabaseRows= function(callback){
@@ -88,7 +124,7 @@ exports.parseString= function (str){
 //converts a string row from users.csv into a user object
 
 exports.createString= function (userObject){
-  console.log("User.createString() called on (JSON version of object): "+ JSON.strinigy(userObject));
+  console.log("User.createString() called on (JSON version of object): "+ JSON.stringify(userObject));
   var output = userObject["name"] + ",";
   output += userObject["gamesPlayed"] + ",";
   output += userObject["wins"] + ",";
