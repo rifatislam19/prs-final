@@ -50,10 +50,11 @@ var villainArrayToObject = function (villain_d) {
 router.get('/user/new', function(req, res){
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('user_details', {newUser:true, incomplete:false})
+  res.render('user_details', {newUser:true, incomplete:false, duplicate:false})
 });
 
 router.post('/users', function(request, response){
+  var duplicateUser=false;
   var user={
       name: request.body.username,
       password: request.body.password,
@@ -69,28 +70,38 @@ router.post('/users', function(request, response){
     var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
     user_info.push(user);//adds user to list
   }
-  user_info.push(new_user);//new user object added to list of users
-  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
   for(i=0; i<user_info.length; i++){
-    new_user_data += user_info[i]["name"] + ",";
-    new_user_data += user_info[i]["gamesPlayed"] + ",";
-    new_user_data += user_info[i]["wins"] + ",";
-    new_user_data += user_info[i]["losses"] + ",";
-    new_user_data += user_info[i]["paper"] + ",";
-    new_user_data += user_info[i]["rock"] + ",";
-    new_user_data += user_info[i]["scissors"] + ",";
-    new_user_data += user_info[i]["password"] + ",";
-    new_user_data += user_info[i]["first"] + ",";
-    new_user_data += user_info[i]["last"] + ",";
-    new_user_data += user_info[i]["created"] + ",";
-    new_user_data += user_info[i]["lastUpdated"];
-    new_user_data += "\n";
+    if(user_info[i]["name"]==user.name){
+      duplicateUser=true;
+      response.status(200);
+      response.setHeader('Content-Type', 'text/html')
+      response.render('user_details', {newUser:true, incomplete:false, duplicate:true})
+    }
   }
-  fs.writeFileSync('data/users.csv', new_user_data,'utf8');
-  //converts user information back into a string and writes it to csv file
-  response.status(200);
-  response.setHeader('Content-Type', 'text/html')
-  response.render('index', {message:false, message2:false});
+  if(!duplicateUser){
+    user_info.push(new_user);//new user object added to list of users
+    var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
+    for(i=0; i<user_info.length; i++){
+      new_user_data += user_info[i]["name"] + ",";
+      new_user_data += user_info[i]["gamesPlayed"] + ",";
+      new_user_data += user_info[i]["wins"] + ",";
+      new_user_data += user_info[i]["losses"] + ",";
+      new_user_data += user_info[i]["paper"] + ",";
+      new_user_data += user_info[i]["rock"] + ",";
+      new_user_data += user_info[i]["scissors"] + ",";
+      new_user_data += user_info[i]["password"] + ",";
+      new_user_data += user_info[i]["first"] + ",";
+      new_user_data += user_info[i]["last"] + ",";
+      new_user_data += user_info[i]["created"] + ",";
+      new_user_data += user_info[i]["lastUpdated"];
+      new_user_data += "\n";
+    }
+    fs.writeFileSync('data/users.csv', new_user_data,'utf8');
+    //converts user information back into a string and writes it to csv file
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render('index', {message:false, message2:false});
+  }
 });
 
 
@@ -99,7 +110,7 @@ router.get('/users/:id/edit', function(req, res){
   var u = Users.getUserByName(req.params.id)
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('user_details', {newUser:false,incomplete:false,user:u})
+  res.render('user_details', {newUser:false,incomplete:false,duplicate:false,user:u})
 });
 
 router.get('/users/:id/delete', function(request, response){
@@ -125,7 +136,7 @@ router.get('/users/:id/', function(request, response){
       console.log("Enter all info!")
       response.status(200);
       response.setHeader('Content-Type', 'text/html')
-      response.render('user_details', {newUser:false,incomplete:true,user:u})
+      response.render('user_details', {newUser:false,incomplete:true,duplicate:false,user:u})
     }
     else{
     var new_user = Users.updateUser(u,user.name,user.password,user.first,user.last);
@@ -175,7 +186,7 @@ router.get('/users/:id/', function(request, response){
 
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render('user_details', {newUser:false,incomplete:false,user:new_user})
+    response.render('user_details', {newUser:false,incomplete:false,duplicate:false,user:new_user})
   }
 
 });

@@ -12,7 +12,13 @@
   <div id="feedback" class="visible">
     <p>Enter all information!</p>
   </div>
-<% } else {%>
+<% } %>
+
+<% if (duplicate) { %>
+<div id="feedback2" class="visible">
+  <p>Username already exists!</p>
+</div>
+<% } %>
 
   <div id="enter_name">
     <%if(newUser){%>
@@ -24,7 +30,7 @@
       Last Name: <input type = "text" name = "lastname"><br>
       <button type="submit" id = "enter_name_button">Create account</button>
     </form>
-    <%}}%>
+    <%}%>
     <%if(!newUser){%>
     <h2><%=user.name%></h2>
     <h3>Created: <%=user.created%></h2>
