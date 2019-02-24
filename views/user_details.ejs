@@ -12,7 +12,7 @@
   <div id="feedback">
   </div>
   <div id="enter_name">
-    <%if(username==" "){%>
+    <%if(newUser){%>
     <h2>New User</h2>
     <form action ="/users" method = "post">
       Username: <input type = "text" name = "username"><br>
@@ -20,6 +20,16 @@
       First Name: <input type = "text" name = "firstname"><br>
       Last Name: <input type = "text" name = "lastname"><br>
       <button type="submit" id = "enter_name_button">Create account</button>
+    </form>
+    <%}%>
+    <%if(!newUser){%>
+    <h2><%=user.username%></h2>
+    <form action ="/users" method = "post">
+      Username: <input type = "text" name = "username"><br>
+      Password: <input type = "text" name = "password"><br>
+      First Name: <input type = "text" name = "firstname"><br>
+      Last Name: <input type = "text" name = "lastname"><br>
+      <button type="submit" id = "enter_name_button">Edit account</button>
     </form>
     <%}%>
 

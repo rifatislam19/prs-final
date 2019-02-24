@@ -69,7 +69,7 @@ var villainArrayToObject = function (villain_d) {
 app.get('/user/new', function(request, response){
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
-  response.render('user_details', {newUser:true,username:username,password:password});
+  response.render('user_details', {newUser:true});
 });
 
 app.get('/login', function(request, response){
@@ -77,8 +77,6 @@ app.get('/login', function(request, response){
       name: request.query.player_name,
       password: request.query.player_password
   };//reads data fields
-  username = request.query.player_name;
-  password = request.query.player_password;
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users
