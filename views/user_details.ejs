@@ -26,11 +26,11 @@
     <h2><%=user.name%></h2>
     <h3>Created: <%=user.created%></h2>
     <h3>Last updated: <%=user.lastUpdated%></h2>
-    <form action ="/userEdited" method = "post">
-      Username: <input type = "text" name = "username"><br>
-      Password: <input type = "text" name = "password"><br>
-      First Name: <input type = "text" name = "firstname"><br>
-      Last Name: <input type = "text" name = "lastname"><br>
+    <form action ="/users/<%=user.name%>" method = "put">
+      Username: <input type = "text" name = "username" value="<%=user.name%>"><br>
+      Password: <input type = "text" name = "password" value="<%=user.password%>"><br>
+      First Name: <input type = "text" name = "firstname" value="<%=user.first%>"><br>
+      Last Name: <input type = "text" name = "lastname" value="<%=user.last%>"><br>
       <button type="submit" id = "enter_name_button">Edit account</button>
       <button type="submit" id = "delete_name_button">Delete account</button>
     </form>

@@ -54,13 +54,12 @@ exports.getUserByName = function(user_id) {
 //   var newCSV = createCSVText(newRows);
 //   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
 
-exports.updateUser = function(user_name, user_password, user_first, user_last) {
-  var userObj = exports.getUserByName(user_name);
-  userObj.name = user_name;
-  userObj.password = user_password;
-  userObj.first = user_first;
-  userObj.last = user_last;
-  return userObj;
+exports.updateUser = function(u, user_name, user_password, user_first, user_last) {
+  u.name = user_name;
+  u.password = user_password;
+  u.first = user_first;
+  u.last = user_last;
+  return u;
 }
 
 exports.deleteUser = function(user_id) {
