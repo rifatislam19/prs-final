@@ -28,8 +28,6 @@ var password = " ";
 //strategy component for specific villain Gato, leave alone
 
 app.get('/', function(request, response){
-  username = " ";
-  password = " ";
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('index', {message:false, message2:false});

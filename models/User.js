@@ -6,6 +6,24 @@ var fs = require("fs");
 
 exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
 
+var userArrayToObject = function (user_d) {
+  var user = {};//initiates object that will be villain
+  user["name"] = user_d[0];
+  user["gamesPlayed"] = parseInt(user_d[1]);
+  user["wins"] = parseInt(user_d[2]);
+  user["losses"] = parseInt(user_d[3]);
+  user["paper"] = parseInt(user_d[4]);
+  user["rock"] = parseInt(user_d[5]);
+  user["scissors"] = parseInt(user_d[6]);
+  user["password"] = user_d[7];
+  user["first"] = user_d[8];
+  user["last"] = user_d[9];
+  user["created"] = user_d[10];
+  user["lastUpdated"] = user_d[11];
+  //adds object attributes dependent on index in array
+  return user;//returns object as output
+}
+
 exports.getUserByName = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
@@ -91,9 +109,6 @@ exports.deleteUser = function(user_id) {
       new_user_data += "\n";
     }
   }
-
-  var userObj = getUser(user_id);
-  return userObj;
 }
 
 exports.getAllDatabaseRows= function(callback){
@@ -121,8 +136,7 @@ exports.parseString= function (str){
   output.first = arr[8];
   output.last = arr[9];
   output.created = arr[10];
-  output.lastUpdated = arr[11],
-  output.loggedOn = arr[12];
+  output.lastUpdated = arr[11]
   console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
   return output;
 }
@@ -163,7 +177,7 @@ exports.createCSVText= function (array){
 
 var completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:"01/01/2019", lastUpdated:"01/01/2019", loggedOn:"No"};//include timing
+  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:"01/01/2019", lastUpdated:"01/01/2019"};//include timing
 }
 //creates a blank user object given an input object
 
@@ -179,7 +193,7 @@ var getDateString= function () {
 
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString(), loggedOn:"No"};//include timing
+  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString()};//include timing
   console.log(JSON.stringify(output));
   return output;
 }

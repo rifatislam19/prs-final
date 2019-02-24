@@ -8,9 +8,12 @@
 <body>
   <% include global/header %>
 
-
-  <div id="feedback">
+  <% if (incomplete) { %>
+  <div id="feedback" class="visible">
+    <p>Enter all information!</p>
   </div>
+<% } else {%>
+
   <div id="enter_name">
     <%if(newUser){%>
     <h2>New User</h2>
@@ -21,18 +24,18 @@
       Last Name: <input type = "text" name = "lastname"><br>
       <button type="submit" id = "enter_name_button">Create account</button>
     </form>
-    <%}%>
+    <%}}%>
     <%if(!newUser){%>
     <h2><%=user.name%></h2>
     <h3>Created: <%=user.created%></h2>
     <h3>Last updated: <%=user.lastUpdated%></h2>
-    <form action ="/users/<%=user.name%>" method = "get">
+    <form method = "get">
       Username: <input type = "text" name = "username" value="<%=user.name%>"><br>
       Password: <input type = "text" name = "password" value="<%=user.password%>"><br>
       First Name: <input type = "text" name = "firstname" value="<%=user.first%>"><br>
       Last Name: <input type = "text" name = "lastname" value="<%=user.last%>"><br>
-      <button type="submit" id = "enter_name_button">Edit account</button>
-      <button type="submit" id = "delete_name_button">Delete account</button>
+      <button type="submit" formaction ="/users/<%=user.name%>" id = "enter_name_button">Edit account</button>
+      <button type="submit" formaction ="/users/<%=user.name%>/delete" id = "delete_button">Delete account</button>
     </form>
     <%}%>
 
