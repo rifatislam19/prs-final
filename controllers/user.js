@@ -102,20 +102,27 @@ router.get('/users/:id/edit', function(req, res){
   res.render('user_details', {newUser:false,user:u})
 });
 
-router.put('/users/:id/', function(request, response){
-  console.log('Request- /users'+request.params.id)+'/';
+router.delete('/users/:id', function(request, response){
+  console.log('Request- Delete /users'+request.params.id)+'/';
+  Users.deleteUser(request.params.id);
+  response.status(200);
+  response.setHeader('Content-Type', 'text/html')
+  response.render('index', {message:false, message2:false});
+});
+
+router.get('/users/:id/', function(request, response){
+  console.log('Request- Put /users'+request.params.id)+'/';
   var u = Users.getUserByName(request.params.id)
 
   var user={
-      name: request.body.username,
-      password: request.body.password,
-      first: request.body.firstname,
-      last: request.body.lastname
+      name: request.query.username,
+      password: request.query.password,
+      first: request.query.firstname,
+      last: request.query.lastname
   };//reads data fields
 
-  var new_user = models_user.updateUser(u,user.name,user.password,user.first,user.last);
+  var new_user = Users.updateUser(u,user.name,user.password,user.first,user.last);
     //add change to lastUpdated !!!!!!!
-
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users

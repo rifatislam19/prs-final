@@ -20,7 +20,7 @@ exports.getUserByName = function(user_id) {
     }
   }
   if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.getUser()");
-  console.log("JSON.stringify called on output object: "+JSON.stringify(user));
+  console.log(user);
   return user;
 }
 //retrieves user by name
@@ -142,7 +142,6 @@ exports.createString= function (userObject){
   output += userObject["last"] + ",";
   output += userObject["created"] + ",";
   output += userObject["lastUpdated"] + ","
-  output += userObject["loggedOn"];
   output += "\n";
   console.log("Outputted string: "+output);
   return output;
