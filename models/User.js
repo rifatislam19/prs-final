@@ -32,28 +32,34 @@ exports.getUserByName = function(user_id) {
 //   });
 // }
 
-exports.updateUser = function(user_id, key, value) {
-  console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
-  var userObj = getUser(user_id);
-  console.log("Old value: "+userObj.key);
-  userObj.key = value;
-  console.log("New value: "+userObj.key);
-  var newString = createString(userObj);//will replace current string
-  var newRows = getRows();
-  var userMissing = true;
-  var index = 0;
-  for (var i = 1; i < len(newRows); i++) {
-    var u = parseString(all_users[i]);
-    if(u.name==user_id){
-      userMissing = false;
-      index = i;
-    }
-  }
-  if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.updateUser");
-  newRows[i]=newString;//replaces string
-  var newCSV = createCSVText(newRows);
-  fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
+// exports.updateUser = function(user_id, key, value) {
+//   console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
+//   var userObj = getUser(user_id);
+//   console.log("Old value: "+userObj.key);
+//   userObj.key = value;
+//   console.log("New value: "+userObj.key);
+//   var newString = createString(userObj);//will replace current string
+//   var newRows = getRows();
+//   var userMissing = true;
+//   var index = 0;
+//   for (var i = 1; i < len(newRows); i++) {
+//     var u = parseString(all_users[i]);
+//     if(u.name==user_id){
+//       userMissing = false;
+//       index = i;
+//     }
+//   }
+//   if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.updateUser");
+//   newRows[i]=newString;//replaces string
+//   var newCSV = createCSVText(newRows);
+//   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
 
+exports.updateUser = function(user_name, user_password, user_first, user_last) {
+  var userObj = exports.getUserByName(user_name);
+  userObj.name = user_name;
+  userObj.password = user_password;
+  userObj.first = user_first;
+  userObj.last = user_last;
   return userObj;
 }
 

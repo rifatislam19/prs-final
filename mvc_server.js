@@ -346,10 +346,7 @@ app.post('/userEdited', function(request, response){
       last: request.body.lastname
   };//reads data fields
 
-  models_user.updateUser(user.name,name,user.name);
-  models_user.updateUser(user.name,password,user.password);
-  models_user.updateUser(user.name,first,user.first);
-  models_user.updateUser(user.name,last,user.last);
+  var new_user = models_user.updateUser(user.name,user.password,user.first,user.last);
   //add change to lastUpdated !!!!!!!
 
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
