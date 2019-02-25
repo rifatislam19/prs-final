@@ -4,6 +4,10 @@ var favicon = require('serve-favicon');//I think this has to do with the thing i
 var models_user = require('./models/User.js');//downloads our library of user functions
 var models_villain = require('./models/Villain.js');//downloads our library of villain functions
 
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./client_secret.json');
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+
 var app = express();
 app.use(express.static('public'));
 app.set('views', __dirname + '/views');
@@ -19,6 +23,13 @@ app.use(require('./controllers/user'));
 var port = 3000;
 app.listen(port, function(){
   console.log('Server started at '+ new Date()+', on port ' + port+'!');
+  doc.useServiceAccountAuth(creds, function (err) {
+    console.log("Successful authentication");
+    doc.getRows(1, function (err, rows) {
+      console.log(rows[0].name);
+      //callback(rows);
+    });
+  });
 });
 //starts server
 

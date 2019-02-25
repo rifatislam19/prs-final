@@ -1,8 +1,16 @@
 var fs = require("fs");
-// var GoogleSpreadsheet = require('google-spreadsheet');
-// var creds = require('./client_secret.json');
-//
-// var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./../client_secret.json');
+
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+
+// var exports.allUsers= function(callback){
+//   doc.useServiceAccountAuth(creds, function (err) {
+//     doc.getRows(1, function (err, rows) {
+//       callback(rows);
+//     });
+//   });
+// }
 
 exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
 
@@ -28,13 +36,21 @@ exports.getUserByName = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
   var user = completelyBlankUser();
-  var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
+  var all_users;
+  doc.useServiceAccountAuth(creds, function (err) {
+    console.log("Users Google Sheet read");
+    doc.getRows(1, function (err, rows) {
+      all_users = rows;
+      //callback(rows);
+    });
+  });
+  //var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
   var userMissing = true;
   for(var i=1; i<all_users.length; i++){
-    var u = exports.parseString(all_users[i]);
-    if(u.name==user_id){
+    //var u = exports.parseString(all_users[i]);
+    if(all_users[i].name==user_id){
       userMissing = false;
-      user=u;
+      user=all_users[i];
     }
   }
   if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.getUser()");
@@ -112,12 +128,12 @@ exports.deleteUser = function(user_id) {
   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
 }
 
-exports.getAllDatabaseRows= function(callback){
+exports.getAllDatabaseRows= function(){
   // Authenticate with the Google Spreadsheets API.
   doc.useServiceAccountAuth(creds, function (err) {
     // Get all of the rows from the spreadsheet.
     doc.getRows(1, function (err, rows) {
-      callback(rows);
+      return rows;
     });
   });
 }
