@@ -41,6 +41,7 @@ exports.getUserByName = function(user_id) {
   console.log(user);
   return user;
 }
+
 //retrieves user by name
 
 // exports.getUsers=function(callback) {

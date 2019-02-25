@@ -1,6 +1,6 @@
 var express = require('express');//downloads express libraries
 var fs = require('fs');//downloads fs libraries, shouldn't be necessary in end project
-var favicon = require('serve-favicon');//I think this has to do with the thing in the corner of a tab
+var favicon = require('serve-favicon');//has to do with icon in the corner of a tab
 var models_user = require('./models/User.js');//downloads our library of user functions
 var models_villain = require('./models/Villain.js');//downloads our library of villain functions
 
