@@ -178,15 +178,14 @@ exports.createCSVText= function (array){
 
 var completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:"01/01/2019", lastUpdated:"01/01/2019"};//include timing
+  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
 }
 //creates a blank user object given an input object
 
-var getDateString= function () {
+exports.getDateString= function () {
 	var now = new Date();
-	var output = "";
-	output = output + now.getMonth();
- 	output = output + "/" + now.getDay();
+	var output = now.getMonth()+1;//month index offset from 0-11 scale
+ 	output = output + "/" + now.getDate();
 	output = output + "/" + now.getFullYear();
 	console.log("Current date logged: " + output);
 	return output;
@@ -194,7 +193,7 @@ var getDateString= function () {
 
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString()};//include timing
+  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
   console.log(JSON.stringify(output));
   return output;
 }
