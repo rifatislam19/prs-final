@@ -24,7 +24,7 @@ var port = 3000;
 app.listen(port, function(){
   console.log('Server started at '+ new Date()+', on port ' + port+'!');
   doc.useServiceAccountAuth(creds, function (err) {
-    console.log("Successful authentication");
+    console.log("Successful authentication!");
     doc.getRows(1, function (err, rows) {
       console.log(rows[0].name);
       //callback(rows);
