@@ -23,7 +23,10 @@
         <th class="top_row">Percent Scissors</th>
         <th class="top_row">Percent Won</th>
       </tr>
+      <%console.log("EJS in stats.ejs is started");//works%>
+      <%console.log(user);//NOOOOOO THIS BITCH EMPTY YEEEET%>
       <%for(var i=0; i< user.length; i++){%>
+        <%console.log("In for loop of stats.ejs");//doesn't work%>
       <tr>
         <td> <%= user[i]["name"]%> </td>
         <td> <%= user[i]["gamesPlayed"]%> </td>

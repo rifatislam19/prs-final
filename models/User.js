@@ -138,26 +138,25 @@ exports.getAllDatabaseRows= function(){
   });
 }
 
-exports.parseString= function (str){
-  console.log("User.parseString() called on: "+str);
-  var arr = str.split(',');
+exports.parseString= function (sheetRow){
+  console.log("User.parseString() called");// on: "+sheetRow);
   var output = {};
-  output.name = arr[0];
-  output.gamesPlayed = arr[1];
-  output.wins = arr[2];
-  output.losses = arr[3];
-  output.paper = arr[4];
-  output.rock = arr[5];
-  output.scissors = arr[6];
-  output.password = arr[7];
-  output.first = arr[8];
-  output.last = arr[9];
-  output.created = arr[10];
-  output.lastUpdated = arr[11]
+  output.name = sheetRow.name;
+  output.gamesPlayed = sheetRow.gamesplayed;
+  output.wins = sheetRow.wins;
+  output.losses = sheetRow.losses;
+  output.paper = sheetRow.paper;
+  output.rock = sheetRow.rock;
+  output.scissors = sheetRow.scissors;
+  output.password = sheetRow.password;
+  output.first = sheetRow.first;
+  output.last = sheetRow.last;
+  output.created = sheetRow.created;
+  output.lastUpdated = sheetRow.lastupdated;
   console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
   return output;
 }
-//converts a string row from users.csv into a user object
+//converts a string row from Google Sheets into a user object
 
 exports.createString= function (userObject){
   console.log("User.createString() called on (JSON version of object): "+ JSON.stringify(userObject));
