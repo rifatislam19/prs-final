@@ -8,15 +8,15 @@
 <body>
   <% include global/header %>
 
-  <% if (incomplete) { %>
-  <div id="feedback" class="visible">
-    <p>Enter all information!</p>
-  </div>
-<% } %>
-
 <% if (duplicate) { %>
 <div id="feedback2" class="visible">
   <p>Username already exists!</p>
+</div>
+<% } %>
+
+<% if (incomplete) { %>
+<div id="feedback" class="visible">
+  <p>Enter all information!</p>
 </div>
 <% } %>
 
