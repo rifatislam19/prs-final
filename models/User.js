@@ -1,8 +1,16 @@
 var fs = require("fs");
-// var GoogleSpreadsheet = require('google-spreadsheet');
-// var creds = require('./client_secret.json');
-//
-// var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./../client_secret.json');
+
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+
+// var exports.allUsers= function(callback){
+//   doc.useServiceAccountAuth(creds, function (err) {
+//     doc.getRows(1, function (err, rows) {
+//       callback(rows);
+//     });
+//   });
+// }
 
 exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
 
@@ -28,13 +36,21 @@ exports.getUserByName = function(user_id) {
   console.log("User.getUser("+user_id+") called");
 
   var user = completelyBlankUser();
-  var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
+  var all_users;
+  doc.useServiceAccountAuth(creds, function (err) {
+    console.log("Users Google Sheet read");
+    doc.getRows(1, function (err, rows) {
+      all_users = rows;
+      //callback(rows);
+    });
+  });
+  //var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
   var userMissing = true;
   for(var i=1; i<all_users.length; i++){
-    var u = exports.parseString(all_users[i]);
-    if(u.name==user_id){
+    //var u = exports.parseString(all_users[i]);
+    if(all_users[i].name==user_id){
       userMissing = false;
-      user=u;
+      user=all_users[i];
     }
   }
   if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.getUser()");
@@ -113,36 +129,35 @@ exports.deleteUser = function(user_id) {
   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
 }
 
-exports.getAllDatabaseRows= function(callback){
+exports.getAllDatabaseRows= function(){
   // Authenticate with the Google Spreadsheets API.
   doc.useServiceAccountAuth(creds, function (err) {
     // Get all of the rows from the spreadsheet.
     doc.getRows(1, function (err, rows) {
-      callback(rows);
+      return rows;
     });
   });
 }
 
-exports.parseString= function (str){
-  console.log("User.parseString() called on: "+str);
-  var arr = str.split(',');
+exports.parseString= function (sheetRow){
+  console.log("User.parseString() called");// on: "+sheetRow);
   var output = {};
-  output.name = arr[0];
-  output.gamesPlayed = arr[1];
-  output.wins = arr[2];
-  output.losses = arr[3];
-  output.paper = arr[4];
-  output.rock = arr[5];
-  output.scissors = arr[6];
-  output.password = arr[7];
-  output.first = arr[8];
-  output.last = arr[9];
-  output.created = arr[10];
-  output.lastUpdated = arr[11]
+  output.name = sheetRow.name;
+  output.gamesPlayed = sheetRow.gamesplayed;
+  output.wins = sheetRow.wins;
+  output.losses = sheetRow.losses;
+  output.paper = sheetRow.paper;
+  output.rock = sheetRow.rock;
+  output.scissors = sheetRow.scissors;
+  output.password = sheetRow.password;
+  output.first = sheetRow.first;
+  output.last = sheetRow.last;
+  output.created = sheetRow.created;
+  output.lastUpdated = sheetRow.lastupdated;
   console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
   return output;
 }
-//converts a string row from users.csv into a user object
+//converts a string row from Google Sheets into a user object
 
 exports.createString= function (userObject){
   console.log("User.createString() called on (JSON version of object): "+ JSON.stringify(userObject));
@@ -179,15 +194,14 @@ exports.createCSVText= function (array){
 
 var completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:"01/01/2019", lastUpdated:"01/01/2019"};//include timing
+  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
 }
 //creates a blank user object given an input object
 
-var getDateString= function () {
+exports.getDateString= function () {
 	var now = new Date();
-	var output = "";
-	output = output + now.getMonth();
- 	output = output + "/" + now.getDay();
+	var output = now.getMonth()+1;//month index offset from 0-11 scale
+ 	output = output + "/" + now.getDate();
 	output = output + "/" + now.getFullYear();
 	console.log("Current date logged: " + output);
 	return output;
@@ -195,7 +209,7 @@ var getDateString= function () {
 
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:getDateString(), lastUpdated:getDateString()};//include timing
+  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
   console.log(JSON.stringify(output));
   return output;
 }

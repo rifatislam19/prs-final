@@ -4,6 +4,10 @@ var favicon = require('serve-favicon');//has to do with icon in the corner of a 
 var models_user = require('./models/User.js');//downloads our library of user functions
 var models_villain = require('./models/Villain.js');//downloads our library of villain functions
 
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./client_secret.json');
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+
 var app = express();
 app.use(express.static('public'));
 app.set('views', __dirname + '/views');
@@ -28,6 +32,17 @@ var password = " ";
 //strategy component for specific villain Gato, leave alone
 
 app.get('/', function(request, response){
+  var user_info = [];
+  doc.useServiceAccountAuth(creds, function (err) {
+    console.log("Successful authentication!");
+    doc.getRows(1, function (err, rows) {
+      for(var i=0; i<rows.length; i++){
+        user_info.push(models_user.parseString(rows[i]));
+      }
+      console.log("Read from Google Sheets: " + user_info);
+      //callback(rows);
+    });
+  });
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('index', {message:false, message2:false});
@@ -69,6 +84,8 @@ app.get('/login', function(request, response){
       name: request.query.player_name,
       password: request.query.player_password
   };//reads data fields
+
+
   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
   var rows = users_file.split('\n');//generates array of stringified user objects
   var user_info = [];//array which will hold objectified users
@@ -298,25 +315,36 @@ app.get('/rules', function(request, response){
 });//simple linking, no parameters
 
 app.get('/stats', function(request, response){
-  var users_file=fs.readFileSync('data/users.csv','utf8');
-  var villains_file=fs.readFileSync('data/villains.csv','utf8');
-  var rows = users_file.split('\n');
-  var villainsRows = villains_file.split('\n');
-  var user_data = [];
-  var villain_data = [];
-  for(var i=1; i<rows.length-1; i++){
-    var user = models_user.parseString(rows[i]);
-    user_data.push(user);//add the user to the array of users
-
-  }
+  // var users_file=fs.readFileSync('data/users.csv','utf8');
+   var villains_file=fs.readFileSync('data/villains.csv','utf8');
+  // var rows = users_file.split('\n');
+   var villainsRows = villains_file.split('\n');
+  // var user_data = [];
+   var villain_data = [];
+  // for(var i=1; i<rows.length-1; i++){
+  //   var user = models_user.parseString(rows[i]);
+  //   user_data.push(user);//add the user to the array of users
+  //
+  // }
+  var user_info = [];
+  doc.useServiceAccountAuth(creds, function (err) {
+    console.log("Successful authentication!");
+    doc.getRows(1, function (err, rows) {
+      for(var i=0; i<rows.length; i++){
+        user_info.push(models_user.parseString(rows[i]));
+      }
+      //callback(rows);
+    });
+  });
   for(var i=1; i<villainsRows.length-1; i++){
     var villain_d = villainsRows[i].split(',');
     var villain = villainArrayToObject(villain_d);
     villain_data.push(villain);//adds the villain to the array of villains
   }
+  console.log("Read from Google Sheets: " + user_info);//NOT UPDATING, EMPTY!!!
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
-  response.render('stats', {user:user_data, villain:villain_data});//links to stats page with query parameters
+  response.render('stats', {user:user_info, villain:villain_data});//links to stats page with query parameters
 });
 app.get('/about', function(request, response){
   response.status(200);
