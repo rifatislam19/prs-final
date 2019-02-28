@@ -32,25 +32,6 @@ exports.allUsers= function(callback){
   });
 }
 
-exports.setValue= function(name,attribute,newValue){
-  doc.useServiceAccountAuth(creds, function (err) {
-    doc.getRows(1, function (err, rows) {
-      console.log("Users.setValue() called to set"+name+"."+attribute+" to "+newValue);
-      var index = -1;
-      for(var i=0; i<rows.length; i ++) {
-        if (name==rows[i].name){
-          index = i;
-        }
-      }
-      if (index == -1) {
-        console.log("User not found for User.setValue()");
-      }
-      rows[index][attribute]=newValue;
-      rows[index].save();
-    });
-  });
-}
-
 exports.getAllUsers = function(callback) {
   console.log("getAllUsers");
   var user_info = [];
@@ -103,7 +84,6 @@ exports.getUserByName = function(user_id, callback) {
     callback(user);
   });
 }
-
 
 // exports.updateUser = function(user_id, key, value) {
 //   console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
