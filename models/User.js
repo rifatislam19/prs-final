@@ -24,6 +24,60 @@ var userArrayToObject = function (user_d) {
   return user;//returns object as output
 }
 
+exports.setValue= function(name,attribute,newValue){
+  doc.useServiceAccountAuth(creds, function (err) {
+    doc.getRows(1, function (err, rows) {
+      console.log("Users.setValue() called to set"+name+"."+attribute+" to "+newValue);
+      var index = -1;
+      for(var i=0; i<rows.length; i ++) {
+        if (name==rows[i].name){
+          index = i;
+        }
+      }
+      if (index == -1) {
+        console.log("User not found for User.setValue()");
+      }
+      rows[index][attribute]=newValue;
+      rows[index].save();
+    });
+  });
+}
+
+exports.addOne= function(name,attribute){
+  doc.useServiceAccountAuth(creds, function (err) {
+    doc.getRows(1, function (err, rows) {
+      console.log("Users.addOne() called to set"+name+"."+attribute);
+      var index = -1;
+      for(var i=0; i<rows.length; i ++) {
+        if (name==rows[i].name){
+          index = i;
+        }
+      }
+      if (index == -1) {
+        console.log("User not found for User.addOne()");
+      }
+      rows[index][attribute]++;
+      rows[index].save();
+    });
+  });
+}
+
+exports.writeToSheet= function(new_user_data){
+  doc.useServiceAccountAuth(creds, function (err) {
+    doc.getRows(1, function (err, rows) {
+      console.log("Users.writeToSheet called to update users");
+
+      for(var i=0; i<rows.length; i ++) {
+        if (name==rows[i].name){
+
+        }
+        rows[i].save;
+      }
+
+    });
+  });
+}
+
 exports.allUsers= function(callback){
   doc.useServiceAccountAuth(creds, function (err) {
     doc.getRows(1, function (err, rows) {
