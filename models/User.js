@@ -4,14 +4,6 @@ var creds = require('./../client_secret.json');
 
 var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
 
-// var exports.allUsers= function(callback){
-//   doc.useServiceAccountAuth(creds, function (err) {
-//     doc.getRows(1, function (err, rows) {
-//       callback(rows);
-//     });
-//   });
-// }
-
 exports.usersCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
 
 var userArrayToObject = function (user_d) {
@@ -60,7 +52,6 @@ exports.getAllUsers = function(callback) {
         created: rows[i].created,
         lastUpdated: rows[i].lastupdated
       }
-      console.log(rows[i].name);
       user_info.push(user);
     }
     callback(user_info);
@@ -93,7 +84,6 @@ exports.getUserByName = function(user_id, callback) {
     callback(user);
   });
 }
-
 
 
 // exports.updateUser = function(user_id, key, value) {

@@ -305,28 +305,35 @@ app.get('/rules', function(request, response){
 });//simple linking, no parameters
 
 app.get('/stats', function(request, response){
-  // var users_file=fs.readFileSync('data/users.csv','utf8');
-   var villains_file=fs.readFileSync('data/villains.csv','utf8');
-  // var rows = users_file.split('\n');
-   var villainsRows = villains_file.split('\n');
-  // var user_data = [];
-   var villain_data = [];
-  // for(var i=1; i<rows.length-1; i++){
-  //   var user = models_user.parseString(rows[i]);
-  //   user_data.push(user);//add the user to the array of users
-  //
-  // }
+  // // var users_file=fs.readFileSync('data/users.csv','utf8');
+  //  var villains_file=fs.readFileSync('data/villains.csv','utf8');
+  // // var rows = users_file.split('\n');
+  //  var villainsRows = villains_file.split('\n');
+  // // var user_data = [];
+  //  var villain_data = [];
+  // // for(var i=1; i<rows.length-1; i++){
+  // //   var user = models_user.parseString(rows[i]);
+  // //   user_data.push(user);//add the user to the array of users
+  // //
+  // // }
   models_user.getAllUsers(function(user_info){
-    for(var i=1; i<villainsRows.length-1; i++){
-      var villain_d = villainsRows[i].split(',');
-      var villain = villainArrayToObject(villain_d);
-      villain_data.push(villain);//adds the villain to the array of villains
-    }
-    console.log("Read from Google Sheets below: " + JSON.stringify(user_info) );
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
-    response.render('stats', {user:user_info, villain:villain_data});//links to stats page with query parameters
+    console.log("user_info:"+JSON.stringify(user_info));
+    var user_data = user_info;
+    models_villain.getAllVillains(function(villain_info){
+      console.log("villain_info:"+JSON.stringify(villain_info));
+      response.status(200);
+      response.setHeader('Content-Type', 'text/html')
+      response.render('stats', {user:user_data, villain:villain_info});
+    });
   });
+
+      // for(var i=1; i<villainsRows.length-1; i++){
+      //   var villain_d = villainsRows[i].split(',');
+      //   var villain = villainArrayToObject(villain_d);
+      //   villain_data.push(villain);//adds the villain to the array of villains
+      // }
+      // console.log("Read from Google Sheets below: " + JSON.stringify(user_info) );
+
   // user_info = models_user.allUsers(function(rows){
   //   for(var i=0; i<rows.length; i++){
   //     user={

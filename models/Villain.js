@@ -1,8 +1,8 @@
 var fs = require("fs");
-// var GoogleSpreadsheet = require('google-spreadsheet');
-// var creds = require('./client_secret.json');
-//
-// var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./../client_secret.json');
+
+var doc = new GoogleSpreadsheet('1KpbeLRyGYaPEkCsgKP-XcHVsYePuX1Uwxuxtg12lEGk');
 
 exports.villainsCSVHeader = "name,gamesPlayed,wins,losses,paper,rock,scissors\n";
 
@@ -19,23 +19,76 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
-exports.getVillainByName = function(villain_id) {
-  console.log("Villain.getVillain("+villain_id+") called");
-
-  var villain = completelyBlankVillain();
-  var all_villains = fs.readFileSync(__dirname +'/../data/villains.csv', 'utf8').split("\n");//getRows();
-  var villainMissing = true;
-  for(var i=1; i<all_villains.length; i++){
-    var u = exports.parseString(all_villains[i]);
-    if(u.name==villain_id){
-      villainMissing = false;
-      villain=u;
-    }
-  }
-  if (villainMissing) console.log("Error: "+villain_id+" not found in villains.csv while running Villain.getVillain()");
-  console.log(villain);
-  return villain;
+exports.allVillains= function(callback){
+  doc.useServiceAccountAuth(creds, function (err) {
+    doc.getRows(2, function (err, rows) {
+      callback(rows);
+    });
+  });
 }
+
+exports.getAllVillains = function(callback) {
+  console.log("getAllVillains");
+  var villain_info = [];
+  var villain = exports.completelyBlankVillain();
+  var allVillains = exports.allVillains(function(rows){
+    for(var i=0; i<rows.length; i++){
+      villain={
+        name:rows[i].name,
+        gamesPlayed:rows[i].gamesplayed,
+        wins: rows[i].wins,
+        losses: rows[i].losses,
+        paper: rows[i].paper,
+        rock: rows[i].rock,
+        scissors: rows[i].scissors,
+        strategy: rows[i].strategy
+      }
+      villain_info.push(villain);
+    }
+    callback(villain_info);
+  });
+}
+
+exports.getVillainByName = function(villain_id, callback) {
+  console.log("getVillainByName: "+villain_id);
+
+  var villain = exports.completelyBlankVillain();
+  var all_villains = allVillains(function(rows){
+    for(var i=0; i<rows.length; i++){
+      if(rows[i].name.trim()==villain_id.trim()){
+        villain={
+          name:rows[i].name,
+          gamesPlayed:rows[i].gamesplayed,
+          wins: rows[i].wins,
+          losses: rows[i].losses,
+          paper: rows[i].paper,
+          rock: rows[i].rock,
+          scissors: rows[i].scissors,
+          strategy: rows[i].strategy
+        }
+      }
+    }
+    callback(villain);
+  });
+}
+//
+// exports.getVillainByName = function(villain_id) {
+//   console.log("Villain.getVillain("+villain_id+") called");
+//
+//   var villain = completelyBlankVillain();
+//   var all_villains = fs.readFileSync(__dirname +'/../data/villains.csv', 'utf8').split("\n");//getRows();
+//   var villainMissing = true;
+//   for(var i=1; i<all_villains.length; i++){
+//     var u = exports.parseString(all_villains[i]);
+//     if(u.name==villain_id){
+//       villainMissing = false;
+//       villain=u;
+//     }
+//   }
+//   if (villainMissing) console.log("Error: "+villain_id+" not found in villains.csv while running Villain.getVillain()");
+//   console.log(villain);
+//   return villain;
+// }
 //retrieves villain by name
 
 // exports.getVillains=function(callback) {
@@ -156,7 +209,7 @@ exports.createCSVText= function (array){
 }
 //converts an array of strings into a csv file
 
-var completelyBlankVillain= function(){
+exports.completelyBlankVillain= function(){
   console.log("Villain.completelyBlankVillain() called");
   return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0};//include timing
 }
