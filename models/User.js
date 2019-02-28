@@ -154,7 +154,7 @@ exports.parseString= function (sheetRow){
   output.last = sheetRow.last;
   output.created = sheetRow.created;
   output.lastUpdated = sheetRow.lastupdated;
-  console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
+  //console.log("JSON.stringify() called on output object: "+JSON.stringify(output));
   return output;
 }
 //converts a string row from Google Sheets into a user object

@@ -32,17 +32,7 @@ var password = " ";
 //strategy component for specific villain Gato, leave alone
 
 app.get('/', function(request, response){
-  var user_info = [];
-  doc.useServiceAccountAuth(creds, function (err) {
-    console.log("Successful authentication!");
-    doc.getRows(1, function (err, rows) {
-      for(var i=0; i<rows.length; i++){
-        user_info.push(models_user.parseString(rows[i]));
-      }
-      console.log("Read from Google Sheets: " + user_info);
-      //callback(rows);
-    });
-  });
+
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('index', {message:false, message2:false});
@@ -333,6 +323,7 @@ app.get('/stats', function(request, response){
       for(var i=0; i<rows.length; i++){
         user_info.push(models_user.parseString(rows[i]));
       }
+      console.log("Read from Google Sheets: " + JSON.stringify(user_info));
       //callback(rows);
     });
   });
@@ -341,7 +332,7 @@ app.get('/stats', function(request, response){
     var villain = villainArrayToObject(villain_d);
     villain_data.push(villain);//adds the villain to the array of villains
   }
-  console.log("Read from Google Sheets: " + user_info);//NOT UPDATING, EMPTY!!!
+  console.log("Read from Google Sheets below: " + JSON.stringify(user_info) );
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render('stats', {user:user_info, villain:villain_data});//links to stats page with query parameters
