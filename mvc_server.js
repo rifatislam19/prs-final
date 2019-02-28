@@ -316,26 +316,49 @@ app.get('/stats', function(request, response){
   //   user_data.push(user);//add the user to the array of users
   //
   // }
-  var user_info = [];
-  doc.useServiceAccountAuth(creds, function (err) {
-    console.log("Successful authentication!");
-    doc.getRows(1, function (err, rows) {
-      for(var i=0; i<rows.length; i++){
-        user_info.push(models_user.parseString(rows[i]));
-      }
-      console.log("Read from Google Sheets: " + JSON.stringify(user_info));
-      //callback(rows);
-    });
+  models_user.getAllUsers(function(user_info){
+    for(var i=1; i<villainsRows.length-1; i++){
+      var villain_d = villainsRows[i].split(',');
+      var villain = villainArrayToObject(villain_d);
+      villain_data.push(villain);//adds the villain to the array of villains
+    }
+    console.log("Read from Google Sheets below: " + JSON.stringify(user_info) );
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render('stats', {user:user_info, villain:villain_data});//links to stats page with query parameters
   });
-  for(var i=1; i<villainsRows.length-1; i++){
-    var villain_d = villainsRows[i].split(',');
-    var villain = villainArrayToObject(villain_d);
-    villain_data.push(villain);//adds the villain to the array of villains
-  }
-  console.log("Read from Google Sheets below: " + JSON.stringify(user_info) );
-  response.status(200);
-  response.setHeader('Content-Type', 'text/html')
-  response.render('stats', {user:user_info, villain:villain_data});//links to stats page with query parameters
+  // user_info = models_user.allUsers(function(rows){
+  //   for(var i=0; i<rows.length; i++){
+  //     user={
+  //       name:rows[i].name,
+  //       gamesPlayed:rows[i].gamesplayed,
+  //       wins: rows[i].wins,
+  //       losses: rows[i].losses,
+  //       paper: rows[i].paper,
+  //       rock: rows[i].rock,
+  //       scissors: rows[i].scissors,
+  //       password: rows[i].password,
+  //       first: rows[i].first,
+  //       last: rows[i].last,
+  //       created: rows[i].created,
+  //       lastUpdated: rows[i].lastupdated
+  //     }
+  //     console.log(rows[i].name);
+  //     user_info.push(user);
+  //   }
+  //   return user_info;
+  // });
+  // doc.useServiceAccountAuth(creds, function (err) {
+  //   console.log("Successful authentication!");
+  //   doc.getRows(1, function (err, rows) {
+  //     for(var i=0; i<rows.length; i++){
+  //       user_info.push(models_user.parseString(rows[i]));
+  //     }
+  //     console.log("Read from Google Sheets: " + JSON.stringify(user_info));
+  //     //callback(rows);
+  //   });
+  // });
+
 });
 app.get('/about', function(request, response){
   response.status(200);

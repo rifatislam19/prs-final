@@ -32,40 +32,69 @@ var userArrayToObject = function (user_d) {
   return user;//returns object as output
 }
 
-exports.getUserByName = function(user_id) {
-  console.log("User.getUser("+user_id+") called");
-
-  var user = completelyBlankUser();
-  var all_users;
+exports.allUsers= function(callback){
   doc.useServiceAccountAuth(creds, function (err) {
-    console.log("Users Google Sheet read");
     doc.getRows(1, function (err, rows) {
-      all_users = rows;
-      //callback(rows);
+      callback(rows);
     });
   });
-  //var all_users = fs.readFileSync(__dirname +'/../data/users.csv', 'utf8').split("\n");//getRows();
-  var userMissing = true;
-  for(var i=1; i<all_users.length; i++){
-    //var u = exports.parseString(all_users[i]);
-    if(all_users[i].name==user_id){
-      userMissing = false;
-      user=all_users[i];
-    }
-  }
-  if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.getUser()");
-  console.log(user);
-  return user;
 }
 
-//retrieves user by name
+exports.getAllUsers = function(callback) {
+  console.log("getAllUsers");
+  var user_info = [];
+  var user = exports.completelyBlankUser();
+  var allUsers = exports.allUsers(function(rows){
+    for(var i=0; i<rows.length; i++){
+      user={
+        name:rows[i].name,
+        gamesPlayed:rows[i].gamesplayed,
+        wins: rows[i].wins,
+        losses: rows[i].losses,
+        paper: rows[i].paper,
+        rock: rows[i].rock,
+        scissors: rows[i].scissors,
+        password: rows[i].password,
+        first: rows[i].first,
+        last: rows[i].last,
+        created: rows[i].created,
+        lastUpdated: rows[i].lastupdated
+      }
+      console.log(rows[i].name);
+      user_info.push(user);
+    }
+    callback(user_info);
+  });
+}
 
-// exports.getUsers=function(callback) {
-//
-//   getAllDatabaseRows(function(users){
-//     callback(users);
-//   });
-// }
+exports.getUserByName = function(user_id, callback) {
+  console.log("Users.getUser: "+user_id);
+
+  var user = exports.completelyBlankUser();
+  var all_users = allUsers(function(rows){
+    for(var i=0; i<rows.length; i++){
+      if(rows[i].name.trim()==user_id.trim()){
+        user={
+          name:rows[i].name,
+          gamesPlayed:rows[i].gamesplayed,
+          wins: rows[i].wins,
+          losses: rows[i].losses,
+          paper: rows[i].paper,
+          rock: rows[i].rock,
+          scissors: rows[i].scissors,
+          password: rows[i].password,
+          first: rows[i].first,
+          last: rows[i].last,
+          created: rows[i].created,
+          lastUpdated: rows[i].lastupdated
+        }
+      }
+    }
+    callback(user);
+  });
+}
+
+
 
 // exports.updateUser = function(user_id, key, value) {
 //   console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
@@ -192,7 +221,7 @@ exports.createCSVText= function (array){
 }
 //converts an array of strings into a csv file
 
-var completelyBlankUser= function(){
+ exports.completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
   return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
 }
