@@ -30,7 +30,7 @@ exports.setValue= function(name,attribute,newValue){
       console.log("Users.setValue() called to set"+name+"."+attribute+" to "+newValue);
       var index = -1;
       for(var i=0; i<rows.length; i ++) {
-        if (name==rows[i].name){
+        if (name==rows[i].username){
           index = i;
         }
       }
@@ -49,7 +49,7 @@ exports.addOne= function(name,attribute){
       console.log("Users.addOne() called to set"+name+"."+attribute);
       var index = -1;
       for(var i=0; i<rows.length; i ++) {
-        if (name==rows[i].name){
+        if (name==rows[i].username){
           index = i;
         }
       }
@@ -68,7 +68,7 @@ exports.writeUsersToSheet= function(new_user_data){
       console.log("Users.writeToSheet called to update users");
 
       for(var i=0; i<rows.length; i ++) {
-        rows[i].name = new_user_data[i].name;
+        rows[i].username = new_user_data[i].name;
         rows[i].gamesplayed = new_user_data[i].gamesPlayed;
         rows[i].name = new_user_data[i].wins;
         rows[i].losses = new_user_data[i].losses;
@@ -80,9 +80,9 @@ exports.writeUsersToSheet= function(new_user_data){
         rows[i].last = new_user_data[i].last;
         rows[i].created = new_user_data[i].created;
         rows[i].lastupdated = new_user_data[i].lastUpdated;
+        console.log("New sheet row: "+JSON.stringify(rows[i]));
         rows[i].save();
       }
-
     });
   });
 }
@@ -102,7 +102,7 @@ exports.getAllUsers = function(callback) {
   var allUsers = exports.allUsers(function(rows){
     for(var i=0; i<rows.length; i++){
       user={
-        name:rows[i].name,
+        name:rows[i].username,
         gamesPlayed:rows[i].gamesplayed,
         wins: rows[i].wins,
         losses: rows[i].losses,
@@ -129,7 +129,7 @@ exports.getUserByName = function(user_id, callback) {
     for(var i=0; i<rows.length; i++){
       if(rows[i].name.trim()==user_id.trim()){
         user={
-          name:rows[i].name,
+          name:rows[i].username,
           gamesPlayed:rows[i].gamesplayed,
           wins: rows[i].wins,
           losses: rows[i].losses,
@@ -223,7 +223,7 @@ exports.getAllDatabaseRows= function(){
 exports.parseString= function (sheetRow){
   console.log("User.parseString() called");// on: "+sheetRow);
   var output = {};
-  output.name = sheetRow.name;
+  output.username = sheetRow.name;
   output.gamesPlayed = sheetRow.gamesplayed;
   output.wins = sheetRow.wins;
   output.losses = sheetRow.losses;

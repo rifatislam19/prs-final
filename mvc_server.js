@@ -81,18 +81,27 @@ app.get('/login', function(request, response){
   else{
   var newUserInfo = true;
   models_user.getAllUsers(function(user_info){
+    console.log("Login username: " + user_data.name);
+    console.log("Login password: " + user_data.password);
     console.log("user_info:"+JSON.stringify(user_info));
     for(i=0;i<user_info.length;i++){
+      console.log("Going through user_info, username: "+user_info[i]["name"]);
       if(user_info[i]["name"]==user_data["name"]){
+        console.log("Username matches");
         if(user_info[i]["password"]==user_data["password"]){
+          console.log("Password matches")
           models_villain.getAllVillains(function(villain_info){
             console.log("villain_info:"+JSON.stringify(villain_info));
+            console.log("End of login procedure");
             response.status(200);
-            response.setHeader('Content-Type', 'text/html')
+            response.setHeader('Content-Type', 'text/html');
             response.render('game', {user:user_data,villain:villain_info,message3:false});//begins name with already existent user
           });
         }
         else{
+          console.log("Index rendering");
+          response.status(200);
+          response.setHeader('Content-Type', 'text/html');
           response.render('index', {message:true, message2:false});//links back to index page with wrong password error message
         }
         newUserInfo = false;//in the event of loop breaking error, does not allow new user with incorrect information to be added
@@ -108,7 +117,7 @@ app.get('/:user/results', function(request, response){
       weapon: request.query.weapon,
       villain_choice: request.query.villain_choice
   };//object of relevant user information from parameters
-
+  console.log("Beginning of results request");
     // var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
     // var rows = users_file.split('\n');//generates array of stringified user objects
     // var user_info = [];//array which will hold objectified users
@@ -126,9 +135,9 @@ app.get('/:user/results', function(request, response){
     // }//creates array of villains
 
     models_user.getAllUsers(function(user_info){
-      console.log("user_info:"+JSON.stringify(user_info));
+      console.log("user_info at start:"+JSON.stringify(user_info));
       models_villain.getAllVillains(function(villain_data){
-        console.log("villain_info:"+JSON.stringify(villain_data));
+        console.log("villain_info at start:"+JSON.stringify(villain_data));
         var ai_throw = 0;//variable that serves as placeholder for randomly chosen throws
         var villain_throw = "";
 
@@ -262,7 +271,7 @@ app.get('/:user/results', function(request, response){
         //   new_user_data += "\n";
         // }
         // fs.writeFileSync('data/users.csv', new_user_data,'utf8');
-
+        console.log("Updated user database:"+JSON.stringify(user_info));
         models_user.writeUsersToSheet(user_info);
         //rewrites new user information to csv file
 
@@ -279,7 +288,7 @@ app.get('/:user/results', function(request, response){
         //   new_villain_data += "\n";
         // }
         // fs.writeFileSync('data/villains.csv', new_villain_data,'utf8');
-
+        console.log("Updated villain database:"+JSON.stringify(villain_data));
         models_villain.writeVillainsToSheet(villain_data);
         //rewrites new villain information to csv file
         response.status(200);

@@ -25,18 +25,14 @@ exports.writeVillainsToSheet= function(new_villain_data){
       console.log("Villain.writeToSheet called to update villains");
 
       for(var i=0; i<rows.length; i ++) {
-        rows[i].name = new_villain_data[i].name;
+        rows[i].villainname = new_villain_data[i].name;
         rows[i].gamesplayed = new_villain_data[i].gamesPlayed;
         rows[i].name = new_villain_data[i].wins;
         rows[i].losses = new_villain_data[i].losses;
         rows[i].paper = new_villain_data[i].paper;
         rows[i].rock = new_villain_data[i].rock;
         rows[i].scissors = new_villain_data[i].scissors;
-        rows[i].password = new_villain_data[i].password;
-        rows[i].first = new_villain_data[i].first;
-        rows[i].last = new_villain_data[i].last;
-        rows[i].created = new_villain_data[i].created;
-        rows[i].lastupdated = new_villain_data[i].lastUpdated;
+        rows[i].strategy = new_villain_data[i].strategy;
         rows[i].save();
       }
 
@@ -59,7 +55,7 @@ exports.getAllVillains = function(callback) {
   var allVillains = exports.allVillains(function(rows){
     for(var i=0; i<rows.length; i++){
       villain={
-        name:rows[i].name,
+        name:rows[i].villainname,
         gamesPlayed:rows[i].gamesplayed,
         wins: rows[i].wins,
         losses: rows[i].losses,
@@ -80,9 +76,9 @@ exports.getVillainByName = function(villain_id, callback) {
   var villain = exports.completelyBlankVillain();
   var all_villains = allVillains(function(rows){
     for(var i=0; i<rows.length; i++){
-      if(rows[i].name.trim()==villain_id.trim()){
+      if(rows[i].villainname.trim()==villain_id.trim()){
         villain={
-          name:rows[i].name,
+          name:rows[i].villainname,
           gamesPlayed:rows[i].gamesplayed,
           wins: rows[i].wins,
           losses: rows[i].losses,
