@@ -62,16 +62,25 @@ exports.addOne= function(name,attribute){
   });
 }
 
-exports.writeToSheet= function(new_user_data){
+exports.writeUsersToSheet= function(new_user_data){
   doc.useServiceAccountAuth(creds, function (err) {
     doc.getRows(1, function (err, rows) {
       console.log("Users.writeToSheet called to update users");
 
       for(var i=0; i<rows.length; i ++) {
-        if (name==rows[i].name){
-
-        }
-        rows[i].save;
+        rows[i].name = new_user_data[i].name;
+        rows[i].gamesplayed = new_user_data[i].gamesPlayed;
+        rows[i].name = new_user_data[i].wins;
+        rows[i].losses = new_user_data[i].losses;
+        rows[i].paper = new_user_data[i].paper;
+        rows[i].rock = new_user_data[i].rock;
+        rows[i].scissors = new_user_data[i].scissors;
+        rows[i].password = new_user_data[i].password;
+        rows[i].first = new_user_data[i].first;
+        rows[i].last = new_user_data[i].last;
+        rows[i].created = new_user_data[i].created;
+        rows[i].lastupdated = new_user_data[i].lastUpdated;
+        rows[i].save();
       }
 
     });

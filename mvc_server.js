@@ -245,37 +245,42 @@ app.get('/:user/results', function(request, response){
             //updates choice and games played attributes for users
           }
         }
-        var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
-        for(i=0; i<user_info.length; i++){
-          new_user_data += user_info[i]["name"] + ",";
-          new_user_data += user_info[i]["gamesPlayed"] + ",";
-          new_user_data += user_info[i]["wins"] + ",";
-          new_user_data += user_info[i]["losses"] + ",";
-          new_user_data += user_info[i]["paper"] + ",";
-          new_user_data += user_info[i]["rock"] + ",";
-          new_user_data += user_info[i]["scissors"] + ",";
-          new_user_data += user_info[i]["password"] + ",";
-          new_user_data += user_info[i]["first"] + ",";
-          new_user_data += user_info[i]["last"] + ",";
-          new_user_data += user_info[i]["created"] + ",";
-          new_user_data += user_info[i]["lastUpdated"];
-          new_user_data += "\n";
-        }
-        fs.writeFileSync('data/users.csv', new_user_data,'utf8');
+        // var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
+        // for(i=0; i<user_info.length; i++){
+        //   new_user_data += user_info[i]["name"] + ",";
+        //   new_user_data += user_info[i]["gamesPlayed"] + ",";
+        //   new_user_data += user_info[i]["wins"] + ",";
+        //   new_user_data += user_info[i]["losses"] + ",";
+        //   new_user_data += user_info[i]["paper"] + ",";
+        //   new_user_data += user_info[i]["rock"] + ",";
+        //   new_user_data += user_info[i]["scissors"] + ",";
+        //   new_user_data += user_info[i]["password"] + ",";
+        //   new_user_data += user_info[i]["first"] + ",";
+        //   new_user_data += user_info[i]["last"] + ",";
+        //   new_user_data += user_info[i]["created"] + ",";
+        //   new_user_data += user_info[i]["lastUpdated"];
+        //   new_user_data += "\n";
+        // }
+        // fs.writeFileSync('data/users.csv', new_user_data,'utf8');
+
+        models_user.writeUsersToSheet(user_info);
         //rewrites new user information to csv file
-        var new_villain_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,strategy\n";
-        for(i=0; i<villain_data.length; i++){
-          new_villain_data += villain_data[i]["name"] + ",";
-          new_villain_data += villain_data[i]["gamesPlayed"] + ",";
-          new_villain_data += villain_data[i]["wins"] + ",";
-          new_villain_data += villain_data[i]["losses"] + ",";
-          new_villain_data += villain_data[i]["paper"] + ",";
-          new_villain_data += villain_data[i]["rock"] + ",";
-          new_villain_data += villain_data[i]["scissors"] + ",";
-          new_villain_data += villain_data[i]["strategy"];
-          new_villain_data += "\n";
-        }
-        fs.writeFileSync('data/villains.csv', new_villain_data,'utf8');
+
+        // var new_villain_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,strategy\n";
+        // for(i=0; i<villain_data.length; i++){
+        //   new_villain_data += villain_data[i]["name"] + ",";
+        //   new_villain_data += villain_data[i]["gamesPlayed"] + ",";
+        //   new_villain_data += villain_data[i]["wins"] + ",";
+        //   new_villain_data += villain_data[i]["losses"] + ",";
+        //   new_villain_data += villain_data[i]["paper"] + ",";
+        //   new_villain_data += villain_data[i]["rock"] + ",";
+        //   new_villain_data += villain_data[i]["scissors"] + ",";
+        //   new_villain_data += villain_data[i]["strategy"];
+        //   new_villain_data += "\n";
+        // }
+        // fs.writeFileSync('data/villains.csv', new_villain_data,'utf8');
+
+        models_villain.writeVillainsToSheet(villain_data);
         //rewrites new villain information to csv file
         response.status(200);
         response.setHeader('Content-Type', 'text/html')

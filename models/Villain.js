@@ -19,6 +19,31 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
+exports.writeVillainsToSheet= function(new_villain_data){
+  doc.useServiceAccountAuth(creds, function (err) {
+    doc.getRows(2, function (err, rows) {
+      console.log("Villain.writeToSheet called to update villains");
+
+      for(var i=0; i<rows.length; i ++) {
+        rows[i].name = new_villain_data[i].name;
+        rows[i].gamesplayed = new_villain_data[i].gamesPlayed;
+        rows[i].name = new_villain_data[i].wins;
+        rows[i].losses = new_villain_data[i].losses;
+        rows[i].paper = new_villain_data[i].paper;
+        rows[i].rock = new_villain_data[i].rock;
+        rows[i].scissors = new_villain_data[i].scissors;
+        rows[i].password = new_villain_data[i].password;
+        rows[i].first = new_villain_data[i].first;
+        rows[i].last = new_villain_data[i].last;
+        rows[i].created = new_villain_data[i].created;
+        rows[i].lastupdated = new_villain_data[i].lastUpdated;
+        rows[i].save();
+      }
+
+    });
+  });
+}
+
 exports.allVillains= function(callback){
   doc.useServiceAccountAuth(creds, function (err) {
     doc.getRows(2, function (err, rows) {

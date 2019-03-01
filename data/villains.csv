@@ -1,9 +1,9 @@
 name,gamesPlayed,wins,losses,paper,rock,scissors,strategy
-Boss,1,0,1,0,1,0,Always rock
+Boss,0,0,0,0,0,0,Always rock
 Spock,0,0,0,0,0,0,Always scissors
 Regal,0,0,0,0,0,0,Always paper
 Mickey,0,0,0,0,0,0,Always ties
-Magician,0,0,0,0,0,0,Always wins
+Magician,1,1,0,0,0,1,Always wins
 Bones,0,0,0,0,0,0,Always loses
 Pixie,0,0,0,0,0,0,Evenly split
 Harry,0,0,0,0,0,0,No scissors
