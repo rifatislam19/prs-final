@@ -70,7 +70,7 @@ exports.writeUsersToSheet= function(new_user_data){
       for(var i=0; i<rows.length; i ++) {
         rows[i].username = new_user_data[i].name;
         rows[i].gamesplayed = new_user_data[i].gamesPlayed;
-        rows[i].name = new_user_data[i].wins;
+        rows[i].wins = new_user_data[i].wins;
         rows[i].losses = new_user_data[i].losses;
         rows[i].paper = new_user_data[i].paper;
         rows[i].rock = new_user_data[i].rock;
@@ -121,13 +121,35 @@ exports.getAllUsers = function(callback) {
   });
 }
 
+exports.createUser = function(user, callback) {
+  var duplicateUser = false;
+  exports.getAllUsers(function(user_info){
+    for(i=0; i<user_info.length; i++){
+      if(user_info[i]["name"]==user.name){
+        duplicateUser=true;
+        callback(user_info);
+      }//redundancy
+    }
+    if(!duplicateUser){//original username verified
+      console.log("MVC Server Input User: "+JSON.stringify(user));
+      var new_user = exports.createBlankUser(user);
+      console.log(new_user.name);
+      doc.addRow(1,new_user,function(){
+        callback();
+      });//new user object added to list of users
+      //converts user information back into a string and writes it to csv file
+    }
+  });
+}
+
 exports.getUserByName = function(user_id, callback) {
   console.log("Users.getUser: "+user_id);
 
   var user = exports.completelyBlankUser();
-  var all_users = allUsers(function(rows){
+  var all_users = exports.allUsers(function(rows){
     for(var i=0; i<rows.length; i++){
-      if(rows[i].name.trim()==user_id.trim()){
+      if(rows[i].username==user_id){
+
         user={
           name:rows[i].username,
           gamesPlayed:rows[i].gamesplayed,
@@ -144,6 +166,7 @@ exports.getUserByName = function(user_id, callback) {
         }
       }
     }
+    console.log(user);
     callback(user);
   });
 }
@@ -170,44 +193,69 @@ exports.getUserByName = function(user_id, callback) {
 //   var newCSV = createCSVText(newRows);
 //   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
 
-exports.updateUser = function(u, user_name, user_password, user_first, user_last) {
-  u.name = user_name;
-  u.password = user_password;
-  u.first = user_first;
-  u.last = user_last;
-  return u;
+exports.updateUser = function(u, user_name, user_password, user_first, user_last, callback) {
+  var new_user = u;
+  new_user.name = user_name;
+  new_user.password = user_password;
+  new_user.first = user_first;
+  new_user.last = user_last;
+  exports.allUsers(function(rows){
+    for(var i=0; i<rows.length; i++){
+      if(rows[i].username.trim()==u.name.trim()){
+        rows[i].username = user_name;
+        rows[i].password = user_password;
+        rows[i].first = user_first;
+        rows[i].last = user_last;
+        rows[i].save();
+      }
+    }
+    callback(new_user);
+  });
 }
+
+// exports.deleteUser = function(user_id) {
+//   console.log("User.deleteUser("+user_id+") called");
+//
+//   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
+//   var rows = users_file.split('\n');//generates array of stringified user objects
+//   var user_info = [];//array which will hold objectified users
+//   for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
+//     var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
+//     user_info.push(user);//adds user to list
+//   }
+//
+//   var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
+//   for(i=0; i<user_info.length; i++){
+//     if(user_info[i]["name"]!=user_id){
+//       new_user_data += user_info[i]["name"] + ",";
+//       new_user_data += user_info[i]["gamesPlayed"] + ",";
+//       new_user_data += user_info[i]["wins"] + ",";
+//       new_user_data += user_info[i]["losses"] + ",";
+//       new_user_data += user_info[i]["paper"] + ",";
+//       new_user_data += user_info[i]["rock"] + ",";
+//       new_user_data += user_info[i]["scissors"] + ",";
+//       new_user_data += user_info[i]["password"] + ",";
+//       new_user_data += user_info[i]["first"] + ",";
+//       new_user_data += user_info[i]["last"] + ",";
+//       new_user_data += user_info[i]["created"] + ",";
+//       new_user_data += user_info[i]["lastUpdated"];
+//       new_user_data += "\n";
+//     }
+//   }
+//   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
+// }
 
 exports.deleteUser = function(user_id) {
   console.log("User.deleteUser("+user_id+") called");
 
-  var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
-  var rows = users_file.split('\n');//generates array of stringified user objects
-  var user_info = [];//array which will hold objectified users
-  for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
-    var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
-    user_info.push(user);//adds user to list
-  }
+  var allUsers = exports.allUsers(function(rows){
+      for(var i=0; i<rows.length; i++){
+        if(rows[i].username == user_id){
+          rows[i].del();
+        }
+      }
+  });
 
-  var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
-  for(i=0; i<user_info.length; i++){
-    if(user_info[i]["name"]!=user_id){
-      new_user_data += user_info[i]["name"] + ",";
-      new_user_data += user_info[i]["gamesPlayed"] + ",";
-      new_user_data += user_info[i]["wins"] + ",";
-      new_user_data += user_info[i]["losses"] + ",";
-      new_user_data += user_info[i]["paper"] + ",";
-      new_user_data += user_info[i]["rock"] + ",";
-      new_user_data += user_info[i]["scissors"] + ",";
-      new_user_data += user_info[i]["password"] + ",";
-      new_user_data += user_info[i]["first"] + ",";
-      new_user_data += user_info[i]["last"] + ",";
-      new_user_data += user_info[i]["created"] + ",";
-      new_user_data += user_info[i]["lastUpdated"];
-      new_user_data += "\n";
-    }
-  }
-  fs.writeFileSync('data/users.csv', new_user_data,'utf8');
 }
 
 exports.getAllDatabaseRows= function(){
@@ -275,7 +323,7 @@ exports.createCSVText= function (array){
 
  exports.completelyBlankUser= function(){
   console.log("User.completelyBlankUser() called");
-  return {name:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
+  return {username:"", gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:"", first:"", last:"", created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
 }
 //creates a blank user object given an input object
 
@@ -290,7 +338,7 @@ exports.getDateString= function () {
 
 exports.createBlankUser= function(user){
   console.log("User.createBlankUser() called");
-  var output = {name:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
+  var output = {username:user.name, gamesPlayed:0, wins:0, losses:0, paper:0, rock:0, scissors:0, password:user.password, first:user.first, last:user.last, created:exports.getDateString(), lastUpdated:exports.getDateString()};//include timing
   console.log(JSON.stringify(output));
   return output;
 }
