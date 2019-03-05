@@ -54,7 +54,6 @@ router.get('/user/new', function(req, res){
 });
 
 router.post('/users', function(request, response){
-  var duplicateUser=false;
   var user={
       name: request.body.username,
       password: request.body.password,
@@ -75,13 +74,15 @@ router.post('/users', function(request, response){
     //   var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
     //   user_info.push(user);//adds user to list
     // }
-    Users.createUser(user, function() {
+    Users.createUser(user, function(user_info, duplicateUser) {
       if(duplicateUser){
+        console.log("DUPLICATE USER FOUND");
         response.status(200);
         response.setHeader('Content-Type', 'text/html');
         response.render('user_details', {newUser:true, incomplete:false, duplicate:true})
       }//redundancy
       if(!duplicateUser){//original username verified
+        console.log("NOT A DUPLICATE");
         response.status(200);
         response.setHeader('Content-Type', 'text/html')
         response.render('index', {message:false, message2:false});
@@ -113,7 +114,7 @@ router.get('/users/:id/delete', function(request, response){
 });
 
 router.get('/users/:id/', function(request, response){
-  console.log('Request- Put /users'+request.params.id)+'/';
+  console.log('Request- Put /users'+request.params.id+'/');
   var u={
       name: request.query.username,
       password: request.query.password,

@@ -289,7 +289,7 @@ app.get('/:user/results', function(request, response){
         // }
         // fs.writeFileSync('data/villains.csv', new_villain_data,'utf8');
         console.log("Updated villain database:"+JSON.stringify(villain_data));
-        models_villain.writeVillainsToSheet(villain_data);
+        models_villain.updateVillain(villain_data);
         //rewrites new villain information to csv file
         response.status(200);
         response.setHeader('Content-Type', 'text/html')

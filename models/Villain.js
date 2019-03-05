@@ -19,7 +19,7 @@ var villainArrayToObject = function (villain_d) {
   return villain;//returns object as output
 }
 
-exports.writeVillainsToSheet= function(new_villain_data){
+exports.updateVillain= function(new_villain_data){
   doc.useServiceAccountAuth(creds, function (err) {
     doc.getRows(2, function (err, rows) {
       console.log("Villain.writeToSheet called to update villains");
@@ -91,89 +91,6 @@ exports.getVillainByName = function(villain_id, callback) {
     }
     callback(villain);
   });
-}
-//
-// exports.getVillainByName = function(villain_id) {
-//   console.log("Villain.getVillain("+villain_id+") called");
-//
-//   var villain = completelyBlankVillain();
-//   var all_villains = fs.readFileSync(__dirname +'/../data/villains.csv', 'utf8').split("\n");//getRows();
-//   var villainMissing = true;
-//   for(var i=1; i<all_villains.length; i++){
-//     var u = exports.parseString(all_villains[i]);
-//     if(u.name==villain_id){
-//       villainMissing = false;
-//       villain=u;
-//     }
-//   }
-//   if (villainMissing) console.log("Error: "+villain_id+" not found in villains.csv while running Villain.getVillain()");
-//   console.log(villain);
-//   return villain;
-// }
-//retrieves villain by name
-
-// exports.getVillains=function(callback) {
-//
-//   getAllDatabaseRows(function(villains){
-//     callback(villains);
-//   });
-// }
-
-// exports.updateVillain = function(villain_id, key, value) {
-//   console.log("Villain.updateVillain("+villain_id+","+key+","+value+") called, which will set "+villain_id+"."+key+" to "+value);
-//   var villainObj = getVillain(villain_id);
-//   console.log("Old value: "+villainObj.key);
-//   villainObj.key = value;
-//   console.log("New value: "+villainObj.key);
-//   var newString = createString(villainObj);//will replace current string
-//   var newRows = getRows();
-//   var villainMissing = true;
-//   var index = 0;
-//   for (var i = 1; i < len(newRows); i++) {
-//     var u = parseString(all_villains[i]);
-//     if(u.name==villain_id){
-//       villainMissing = false;
-//       index = i;
-//     }
-//   }
-//   if (villainMissing) console.log("Error: "+villain_id+" not found in villains.csv while running Villain.updateVillain");
-//   newRows[i]=newString;//replaces string
-//   var newCSV = createCSVText(newRows);
-//   fs.writeFileSync(__dirname +'/../data/villains.csv', 'utf8', newCSV);
-//
-// exports.updateVillain = function(u, villain_name, villain_password, villain_first, villain_last) {
-//   u.name = villain_name;
-//   u.password = villain_password;
-//   u.first = villain_first;
-//   u.last = villain_last;
-//   return u;
-// }
-
-exports.deleteVillain = function(villain_id) {
-  console.log("Villain.deleteVillain("+villain_id+") called");
-
-  var villains_file=fs.readFileSync('data/villains.csv','utf8');//converts villains csv to a string
-  var rows = villains_file.split('\n');//generates array of stringified villain objects
-  var villain_info = [];//array which will hold objectified villains
-  for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
-    var villain = villainArrayToObject(rows[i].split(','));//converts stringified villain object to array of stringified values
-    villain_info.push(villain);//adds villain to list
-  }
-
-  var new_villain_data = exports.villainsCSVHeader;
-  for(i=0; i<villain_info.length; i++){
-    if(villain_info[i]["name"]!=villain_id){
-      new_villain_data += villain_info[i]["name"] + ",";
-      new_villain_data += villain_info[i]["gamesPlayed"] + ",";
-      new_villain_data += villain_info[i]["wins"] + ",";
-      new_villain_data += villain_info[i]["losses"] + ",";
-      new_villain_data += villain_info[i]["paper"] + ",";
-      new_villain_data += villain_info[i]["rock"] + ",";
-      new_villain_data += villain_info[i]["scissors"] + ",";
-      new_villain_data += "\n";
-    }
-  }
-  fs.writeFileSync('data/villains.csv', new_villain_data,'utf8');
 }
 
 exports.getAllDatabaseRows= function(callback){

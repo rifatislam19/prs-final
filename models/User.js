@@ -126,8 +126,8 @@ exports.createUser = function(user, callback) {
   exports.getAllUsers(function(user_info){
     for(i=0; i<user_info.length; i++){
       if(user_info[i]["name"]==user.name){
-        duplicateUser=true;
-        callback(user_info);
+        duplicateUser = true;
+        callback(user_info, duplicateUser);
       }//redundancy
     }
     if(!duplicateUser){//original username verified
@@ -135,7 +135,7 @@ exports.createUser = function(user, callback) {
       var new_user = exports.createBlankUser(user);
       console.log(new_user.name);
       doc.addRow(1,new_user,function(){
-        callback();
+        callback(user_info, duplicateUser);
       });//new user object added to list of users
       //converts user information back into a string and writes it to csv file
     }
@@ -171,79 +171,29 @@ exports.getUserByName = function(user_id, callback) {
   });
 }
 
-// exports.updateUser = function(user_id, key, value) {
-//   console.log("User.updateUser("+user_id+","+key+","+value+") called, which will set "+user_id+"."+key+" to "+value);
-//   var userObj = getUser(user_id);
-//   console.log("Old value: "+userObj.key);
-//   userObj.key = value;
-//   console.log("New value: "+userObj.key);
-//   var newString = createString(userObj);//will replace current string
-//   var newRows = getRows();
-//   var userMissing = true;
-//   var index = 0;
-//   for (var i = 1; i < len(newRows); i++) {
-//     var u = parseString(all_users[i]);
-//     if(u.name==user_id){
-//       userMissing = false;
-//       index = i;
-//     }
-//   }
-//   if (userMissing) console.log("Error: "+user_id+" not found in users.csv while running User.updateUser");
-//   newRows[i]=newString;//replaces string
-//   var newCSV = createCSVText(newRows);
-//   fs.writeFileSync(__dirname +'/../data/users.csv', 'utf8', newCSV);
-
 exports.updateUser = function(u, user_name, user_password, user_first, user_last, callback) {
+  console.log("updateUser started");
   var new_user = u;
-  new_user.name = user_name;
-  new_user.password = user_password;
-  new_user.first = user_first;
-  new_user.last = user_last;
+  // new_user.name = user_name;
+  // new_user.password = user_password;
+  // new_user.first = user_first;
+  // new_user.last = user_last;
   exports.allUsers(function(rows){
     for(var i=0; i<rows.length; i++){
-      if(rows[i].username.trim()==u.name.trim()){
-        rows[i].username = user_name;
-        rows[i].password = user_password;
-        rows[i].first = user_first;
-        rows[i].last = user_last;
+      if(rows[i].username==user_name){
+        console.log("Rows before: "+JSON.stringify(rows[i]));
+        rows[i].username = u.name;
+        rows[i].password = u.password;
+        rows[i].first = u.first;
+        rows[i].last = u.last;
+        rows[i].lastupdated = exports.getDateString();
         rows[i].save();
+        console.log("Rows after: "+JSON.stringify(rows[i]));
       }
     }
     callback(new_user);
   });
 }
-
-// exports.deleteUser = function(user_id) {
-//   console.log("User.deleteUser("+user_id+") called");
-//
-//   var users_file=fs.readFileSync('data/users.csv','utf8');//converts users csv to a string
-//   var rows = users_file.split('\n');//generates array of stringified user objects
-//   var user_info = [];//array which will hold objectified users
-//   for(var i=1; i<rows.length-1; i++){//indexing does not include header or whitespace at the end
-//     var user = userArrayToObject(rows[i].split(','));//converts stringified user object to array of stringified values
-//     user_info.push(user);//adds user to list
-//   }
-//
-//   var new_user_data = "name,gamesPlayed,wins,losses,paper,rock,scissors,password,first,last,created,lastUpdated\n";
-//   for(i=0; i<user_info.length; i++){
-//     if(user_info[i]["name"]!=user_id){
-//       new_user_data += user_info[i]["name"] + ",";
-//       new_user_data += user_info[i]["gamesPlayed"] + ",";
-//       new_user_data += user_info[i]["wins"] + ",";
-//       new_user_data += user_info[i]["losses"] + ",";
-//       new_user_data += user_info[i]["paper"] + ",";
-//       new_user_data += user_info[i]["rock"] + ",";
-//       new_user_data += user_info[i]["scissors"] + ",";
-//       new_user_data += user_info[i]["password"] + ",";
-//       new_user_data += user_info[i]["first"] + ",";
-//       new_user_data += user_info[i]["last"] + ",";
-//       new_user_data += user_info[i]["created"] + ",";
-//       new_user_data += user_info[i]["lastUpdated"];
-//       new_user_data += "\n";
-//     }
-//   }
-//   fs.writeFileSync('data/users.csv', new_user_data,'utf8');
-// }
 
 exports.deleteUser = function(user_id) {
   console.log("User.deleteUser("+user_id+") called");
