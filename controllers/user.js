@@ -6,36 +6,36 @@ var router = express.Router();
 
 var Users = require('../models/User');
 
-var userArrayToObject = function (user_d) {
-  var user = {};//initiates object that will be villain
-  user["name"] = user_d[0];
-  user["gamesPlayed"] = parseInt(user_d[1]);
-  user["wins"] = parseInt(user_d[2]);
-  user["losses"] = parseInt(user_d[3]);
-  user["paper"] = parseInt(user_d[4]);
-  user["rock"] = parseInt(user_d[5]);
-  user["scissors"] = parseInt(user_d[6]);
-  user["password"] = user_d[7];
-  user["first"] = user_d[8];
-  user["last"] = user_d[9];
-  user["created"] = user_d[10];
-  user["lastUpdated"] = user_d[11];
-  //adds object attributes dependent on index in array
-  return user;//returns object as output
-}
-var villainArrayToObject = function (villain_d) {
-  var villain = {};//initiates object that will be villain
-  villain["name"] = villain_d[0];
-  villain["gamesPlayed"] = parseInt(villain_d[1]);
-  villain["wins"] = parseInt(villain_d[2]);
-  villain["losses"] = parseInt(villain_d[3]);
-  villain["paper"] = parseInt(villain_d[4]);
-  villain["rock"] = parseInt(villain_d[5]);
-  villain["scissors"] = parseInt(villain_d[6]);
-  villain["strategy"] = villain_d[7];
-  //adds object attributes dependent on index in array
-  return villain;//returns object as output
-}
+// var userArrayToObject = function (user_d) {
+//   var user = {};//initiates object that will be villain
+//   user["name"] = user_d[0];
+//   user["gamesPlayed"] = parseInt(user_d[1]);
+//   user["wins"] = parseInt(user_d[2]);
+//   user["losses"] = parseInt(user_d[3]);
+//   user["paper"] = parseInt(user_d[4]);
+//   user["rock"] = parseInt(user_d[5]);
+//   user["scissors"] = parseInt(user_d[6]);
+//   user["password"] = user_d[7];
+//   user["first"] = user_d[8];
+//   user["last"] = user_d[9];
+//   user["created"] = user_d[10];
+//   user["lastUpdated"] = user_d[11];
+//   //adds object attributes dependent on index in array
+//   return user;//returns object as output
+// }
+// var villainArrayToObject = function (villain_d) {
+//   var villain = {};//initiates object that will be villain
+//   villain["name"] = villain_d[0];
+//   villain["gamesPlayed"] = parseInt(villain_d[1]);
+//   villain["wins"] = parseInt(villain_d[2]);
+//   villain["losses"] = parseInt(villain_d[3]);
+//   villain["paper"] = parseInt(villain_d[4]);
+//   villain["rock"] = parseInt(villain_d[5]);
+//   villain["scissors"] = parseInt(villain_d[6]);
+//   villain["strategy"] = villain_d[7];
+//   //adds object attributes dependent on index in array
+//   return villain;//returns object as output
+// }
 
 // router.get('/:id', function(req, res){
 //   console.log('Request- /user/'+req.params.id);
@@ -48,6 +48,7 @@ var villainArrayToObject = function (villain_d) {
 // });
 
 router.get('/user/new', function(req, res){
+  console.log("GET request for creating a new user within user_details");
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
   res.render('user_details', {newUser:true, incomplete:false, duplicate:false})
@@ -61,7 +62,7 @@ router.post('/users', function(request, response){
       last: request.body.lastname
   };//reads data fields
   if(user.username==""||user.password==""||user.first==""||user.last==""){
-    console.log("Enter all info!")
+    console.log("Incomplete user information, sent back to user_details");
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
     response.render('user_details', {newUser:true,incomplete:true,duplicate:false})
@@ -76,13 +77,13 @@ router.post('/users', function(request, response){
     // }
     Users.createUser(user, function(user_info, duplicateUser) {
       if(duplicateUser){
-        console.log("DUPLICATE USER FOUND");
+        console.log("Duplicate user found in new user POST request in controllers/user.js");
         response.status(200);
         response.setHeader('Content-Type', 'text/html');
         response.render('user_details', {newUser:true, incomplete:false, duplicate:true})
       }//redundancy
       if(!duplicateUser){//original username verified
-        console.log("NOT A DUPLICATE");
+        console.log("Valid username entered, POST request made in controllers/user.js and directed to index");
         response.status(200);
         response.setHeader('Content-Type', 'text/html')
         response.render('index', {message:false, message2:false});
@@ -92,20 +93,17 @@ router.post('/users', function(request, response){
   }
 });
 
-
 router.get('/users/:id/edit', function(req, res){
-  console.log('Request- /users/'+req.params.id)+'/edit';
+  console.log("GET request made to edit user "+req.params.id+" in controllers/user.js");
   Users.getUserByName(req.params.id, function(u) {
-    //console.log(u);
     res.status(200);
     res.setHeader('Content-Type', 'text/html')
     res.render('user_details', {newUser:false,incomplete:false,duplicate:false,user:u})
   });
-
 });
 
 router.get('/users/:id/delete', function(request, response){
-  console.log('Request- Delete /users'+request.params.id)+'/';
+  console.log(request.params.id+" deleted in controllers/user.js");
   Users.deleteUser(request.params.id);
   response.redirect('/');
   // response.status(200);
@@ -114,7 +112,7 @@ router.get('/users/:id/delete', function(request, response){
 });
 
 router.get('/users/:id/', function(request, response){
-  console.log('Request- Put /users'+request.params.id+'/');
+  console.log("GET request for /users/"+request.params.id+"/");
   var u={
       name: request.query.username,
       password: request.query.password,
@@ -122,7 +120,7 @@ router.get('/users/:id/', function(request, response){
       last: request.query.lastname
   };//reads data fields
   if(u.username==""||u.password==""||u.first==""||u.last==""){
-    console.log("Enter all info!")
+    console.log("Incomplete user data, sent back to user_details");
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
     response.render('user_details', {newUser:false,incomplete:true,duplicate:false,user:u})
@@ -130,15 +128,13 @@ router.get('/users/:id/', function(request, response){
   else{
     Users.getUserByName(request.params.id, function(user){
       Users.updateUser(u,user.name,user.password,user.first,user.last, function(new_user){
+        console.log(user.name+" updated in controllers/user.js");
         response.status(200);
         response.setHeader('Content-Type', 'text/html');
         response.render('user_details', {newUser:false,incomplete:false,duplicate:false,user:new_user});
       });
     });
   }
-
-
 });
-
 
 module.exports = router;
