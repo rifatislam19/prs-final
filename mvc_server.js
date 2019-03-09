@@ -21,11 +21,9 @@ app.use(express.urlencoded());
 app.use(require('./controllers/user'));
 //downloads our library of user controllers
 
-var port = 3000;
-app.listen(port, function(){
-  console.log('Server started at '+ new Date()+', on port ' + port+'!');
-});
-//starts server, place where you can test code once calling node mvc_server.js in terminal immediately
+var port = process.env.PORT || 8000;
+app.listen(port);
+//starts server
 
 var count = 0;
 var username = " ";
